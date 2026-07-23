@@ -1,0 +1,36 @@
+# v0 sandbox internal files
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
+.snowflake/
+.v0-trash/
+.vercel/
+next.user-config.*
+
+# Environment variables
+.env*.local
+
+# Claude Code local session settings (not part of the project)
+.claude/
+
+# Common ignores
+node_modules
+.next/
+/out/
+/build
+.DS_Store
+*.pem
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# typescript
+*.tsbuildinfo
+
+# local video/media source files — hosted on Cloudflare R2 instead, too large for git
+# (hero-background.mp4 is small enough to stay tracked directly)
+public/videos/*
+!public/videos/hero-background.mp4
