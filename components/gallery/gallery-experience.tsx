@@ -24,10 +24,9 @@ const HINT_TEXT = "Acessar Galeria Completa";
 const HINT_TYPE_MS = 45;
 const HINT_NOTIFY_DELAY_MS = 10000;
 const HINT_NOTIFY_DURATION_MS = 900;
-const DRIVE_URL = "https://drive.google.com/drive/folders/1hTbUV_w31ZOZzDRf7hERf2UL_6BrQWyZ?usp=sharing";
 
 /** Digita "Acessar Galeria Completa" e, 10s depois de terminar, pulsa uma vez para lembrar que está ali. */
-function GalleryHintLink() {
+function GalleryHintLink({ driveUrl }: { driveUrl: string }) {
   const [typed, setTyped] = useState("");
   const [done, setDone] = useState(false);
   const [notify, setNotify] = useState(false);
@@ -64,7 +63,7 @@ function GalleryHintLink() {
 
   return (
     <a
-      href={DRIVE_URL}
+      href={driveUrl}
       target="_blank"
       rel="noopener noreferrer"
       className={`inline-flex items-center gap-2 whitespace-nowrap font-mono text-xs uppercase tracking-wide text-muted-foreground transition-colors hover:text-[var(--client-accent)] sm:text-sm ${
@@ -135,13 +134,23 @@ function FolderCover({ folder }: { folder: GalleryFolder }) {
   );
 }
 
-export function GalleryExperience({ folders }: { folders: GalleryFolder[] }) {
+export type GalleryExperienceProps = {
+  folders: GalleryFolder[];
+  accessCodes: string[];
+  lockScreenTitle: string;
+  logo: string;
+  brandName: string;
+  driveUrl?: string;
+  homeHref: string;
+};
+
+export function GalleryExperience({ folders, accessCodes, lockScreenTitle, logo, brandName, driveUrl, homeHref }: GalleryExperienceProps) {
   const [unlocked, setUnlocked] = useState(false);
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   if (!unlocked) {
-    return <LockScreen onUnlock={() => setUnlocked(true)} />;
+    return <LockScreen onUnlock={() => setUnlocked(true)} accessCodes={accessCodes} title={lockScreenTitle} logo={logo} brandName={brandName} />;
   }
 
   const activeFolder = folders.find((folder) => folder.id === activeFolderId) ?? null;
@@ -150,7 +159,7 @@ export function GalleryExperience({ folders }: { folders: GalleryFolder[] }) {
     <main className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       {!activeFolder && (
         <a
-          href="/"
+          href={homeHref}
           aria-label="Voltar para a página inicial"
           className="fixed left-3 top-6 z-50 flex size-12 items-center justify-center text-foreground/70 transition-colors hover:text-[var(--client-accent)] lg:left-9 lg:top-8"
         >
@@ -166,7 +175,7 @@ export function GalleryExperience({ folders }: { folders: GalleryFolder[] }) {
                 <h1 className="text-balance font-display text-3xl leading-[0.95] tracking-tight sm:text-4xl md:text-6xl lg:text-7xl">
                   <AnimatedHeading text="Galeria" />
                 </h1>
-                <GalleryHintLink />
+                {driveUrl && <GalleryHintLink driveUrl={driveUrl} />}
               </header>
 
               <div
@@ -207,7 +216,7 @@ export function GalleryExperience({ folders }: { folders: GalleryFolder[] }) {
                 <h2 className="text-balance font-display text-3xl leading-[0.95] tracking-tight sm:text-5xl md:text-6xl">
                   <AnimatedHeading key={activeFolder.id} text={activeFolder.label} />
                 </h2>
-                <GalleryHintLink />
+                {driveUrl && <GalleryHintLink driveUrl={driveUrl} />}
               </header>
 
               {activeFolder.photos.length === 0 ? (

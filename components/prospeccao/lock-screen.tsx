@@ -5,14 +5,22 @@ import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import { isValidProspeccaoCode } from "@/lib/prospeccao";
 
-export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
+export type ProspeccaoLockScreenProps = {
+  onUnlock: () => void;
+  accessCode: string;
+  title: string;
+  logo: string;
+  brandName: string;
+};
+
+export function LockScreen({ onUnlock, accessCode, title, logo, brandName }: ProspeccaoLockScreenProps) {
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
   const [showCode, setShowCode] = useState(false);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (isValidProspeccaoCode(code)) {
+    if (isValidProspeccaoCode(code, accessCode)) {
       onUnlock();
     } else {
       setError(true);
@@ -22,12 +30,12 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-black px-6 text-white">
       <div className="relative h-40 w-40 overflow-hidden sm:h-48 sm:w-48">
-        <Image src="/images/pascoal-logo.png" alt="Pascoal Bombas" fill sizes="192px" className="scale-[1.8] object-cover" />
+        <Image src={logo} alt={brandName} fill sizes="192px" className="scale-[1.8] object-cover" />
       </div>
       <span className="mt-2 inline-flex items-center gap-3 font-mono text-sm text-white/45">
         <span className="h-px w-12 bg-[var(--client-accent)]" />Acesso restrito<span className="h-px w-12 bg-[var(--client-accent)]" />
       </span>
-      <h1 className="mt-6 text-balance text-center font-display text-4xl leading-[0.95] tracking-tight sm:text-5xl">Central de Prospecção</h1>
+      <h1 className="mt-6 text-balance text-center font-display text-4xl leading-[0.95] tracking-tight sm:text-5xl">{title}</h1>
 
       <form onSubmit={handleSubmit} className="mt-10 flex w-full max-w-sm flex-col items-center gap-4">
         <div className="relative w-full">

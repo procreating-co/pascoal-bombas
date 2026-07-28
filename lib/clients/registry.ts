@@ -21,3 +21,7 @@ const REGISTRY: Record<string, ClientEntry> = {
 export function getClientEntry(slug: string): ClientEntry | null {
   return REGISTRY[slug] ?? null;
 }
+
+export function getRegisteredClientSlugs(): string[] {
+  return Object.keys(REGISTRY);
+}

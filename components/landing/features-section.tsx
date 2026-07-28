@@ -28,6 +28,24 @@ function PhotoCarousel({ isVisible, photos, galleryHref }: { isVisible: boolean;
   const pause = () => { pausedRef.current = true; };
   const resume = () => { pausedRef.current = false; };
 
+  // O auto-advance chama scrollIntoView, que pode reposicionar a página verticalmente se a
+  // galeria estiver parcialmente visível no momento do tick. Pausamos sempre que a página está
+  // sendo rolada (inclusive por inércia, fora do próprio carrossel) para nunca competir com o
+  // scroll do usuário — e só retomamos depois de um pequeno período sem novos eventos de scroll.
+  useEffect(() => {
+    let idleTimer: ReturnType<typeof setTimeout>;
+    const onWindowScroll = () => {
+      pausedRef.current = true;
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => { pausedRef.current = false; }, 300);
+    };
+    window.addEventListener("scroll", onWindowScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onWindowScroll);
+      clearTimeout(idleTimer);
+    };
+  }, []);
+
   // No touque, o track fica com `touch-action: pan-y` (rolagem vertical nativa e prioritária).
   // Só assumimos o gesto horizontal manualmente quando o próprio movimento do dedo confirma
   // uma intenção lateral — evitando que a galeria capture o swipe e trave o scroll da página.
@@ -69,7 +87,10 @@ function PhotoCarousel({ isVisible, photos, galleryHref }: { isVisible: boolean;
 
       if (axis === null) {
         if (Math.abs(dx) < AXIS_LOCK_THRESHOLD && Math.abs(dy) < AXIS_LOCK_THRESHOLD) return;
-        axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+        // Vertical tem prioridade: só travamos no eixo horizontal quando o arrasto lateral é
+        // claramente dominante, não apenas ligeiramente maior — evita que um swipe de rolagem
+        // levemente diagonal seja mal interpretado como um drag da galeria.
+        axis = Math.abs(dx) > Math.abs(dy) * 1.25 ? "x" : "y";
         if (axis === "x") el.style.scrollSnapType = "none";
       }
 

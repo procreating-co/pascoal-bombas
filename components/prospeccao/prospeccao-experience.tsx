@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Lock, LockOpen } from "lucide-react";
 import { LockScreen } from "@/components/prospeccao/lock-screen";
 
-/** Data-alvo do desbloqueio: 30/07/2026 às 00:00, horário de Brasília (UTC-3). */
-const UNLOCK_AT = "2026-07-30T00:00:00-03:00";
 const CLICK_FEEDBACK_MS = 600;
 const TOAST_MS = 2200;
 
@@ -78,13 +76,23 @@ function LockToggle({ onClick, triggered }: { onClick: () => void; triggered: bo
   );
 }
 
-export function ProspeccaoExperience() {
+export type ProspeccaoExperienceProps = {
+  accessCode: string;
+  unlockAt: string;
+  title: string;
+  toastText: string;
+  logo: string;
+  brandName: string;
+  homeHref: string;
+};
+
+export function ProspeccaoExperience({ accessCode, unlockAt, title, toastText, logo, brandName, homeHref }: ProspeccaoExperienceProps) {
   const [unlocked, setUnlocked] = useState(false);
   const [lockTriggered, setLockTriggered] = useState(false);
   const [shakeScreen, setShakeScreen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const timeoutIds = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const { days, hours, minutes, seconds } = useCountdown(UNLOCK_AT);
+  const { days, hours, minutes, seconds } = useCountdown(unlockAt);
 
   useEffect(() => () => timeoutIds.current.forEach(clearTimeout), []);
 
@@ -100,7 +108,7 @@ export function ProspeccaoExperience() {
   };
 
   if (!unlocked) {
-    return <LockScreen onUnlock={() => setUnlocked(true)} />;
+    return <LockScreen onUnlock={() => setUnlocked(true)} accessCode={accessCode} title={title} logo={logo} brandName={brandName} />;
   }
 
   return (
@@ -110,7 +118,7 @@ export function ProspeccaoExperience() {
       }`}
     >
       <a
-        href="/"
+        href={homeHref}
         aria-label="Voltar para a página inicial"
         className="fixed left-6 top-6 z-50 flex size-12 items-center justify-center border border-black/15 bg-white/80 text-black backdrop-blur-xl transition-colors hover:border-[#b8863b] hover:text-[#b8863b] lg:left-12 lg:top-8"
       >
@@ -118,13 +126,13 @@ export function ProspeccaoExperience() {
       </a>
 
       <h1 className="text-balance font-display text-4xl leading-[0.95] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-        <AnimatedTitleText text="Central de Prospecção" />
+        <AnimatedTitleText text={title} />
       </h1>
 
       <div className="relative mt-10 lg:mt-14">
         {showToast && (
           <span className="pointer-events-none absolute -top-12 left-1/2 whitespace-nowrap border border-black/10 bg-black px-4 py-2 font-mono text-xs uppercase tracking-wide text-white shadow-xl animate-[toast-in_200ms_ease-out_both]">
-            Falta pouco!
+            {toastText}
           </span>
         )}
         <div className="inline-flex items-center gap-5 rounded-[28px] border border-black/[0.06] bg-white/70 px-6 py-4 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.18)] backdrop-blur-2xl sm:gap-7 sm:px-9 sm:py-5">

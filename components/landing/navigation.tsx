@@ -6,13 +6,14 @@ import { Handshake, Images, Menu, X } from "lucide-react";
 
 export type NavigationProps = {
   brandName: string;
+  homeHref: string;
   galleryHref: string;
   galleryLabel: string;
   prospeccaoCtaLabel: string;
   showProspeccaoCta: boolean;
 };
 
-export function Navigation({ brandName, galleryHref, galleryLabel, prospeccaoCtaLabel, showProspeccaoCta }: NavigationProps) {
+export function Navigation({ brandName, homeHref, galleryHref, galleryLabel, prospeccaoCtaLabel, showProspeccaoCta }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -72,7 +73,7 @@ export function Navigation({ brandName, galleryHref, galleryLabel, prospeccaoCta
             }`}
           >
             {/* Logo */}
-            <a href="/" className="group flex items-center">
+            <a href={homeHref} className="group flex items-center">
               <span className={`font-display tracking-tight transition-all duration-500 ${isScrolled ? "text-xl text-foreground" : "text-2xl text-white"}`}>{brandName}</span>
             </a>
 
