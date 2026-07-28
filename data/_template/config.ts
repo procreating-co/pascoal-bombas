@@ -9,14 +9,20 @@ import type { ClientConfig } from "@/lib/clients/types";
  * o `npx tsc --noEmit` (e o build) falha imediatamente apontando o campo que falta.
  */
 export const clientConfig: ClientConfig = {
+  /** Precisa bater com o nome desta pasta (`data/<slug>/`) e com a chave que você vai
+   *  adicionar em `lib/clients/registry.ts`. Vira o segmento da URL: `/p/<slug>`. */
   slug: "cliente-exemplo",
+  /** Nome exibido no menu, no rodapé e nas lock screens. */
   brandName: "Nome do Cliente",
   /** Logo exibido nas duas lock screens (galeria e prospecção). Coloque o arquivo em `public/images/`. */
   logo: "/images/cliente-exemplo-logo.png",
 
   metadata: {
+    /** `<title>` da aba do navegador e título do preview ao compartilhar o link. */
     title: "Nome do Cliente | Posicionamento e Aquisição",
+    /** Descrição usada no preview ao compartilhar o link (WhatsApp, Slack, etc.). */
     description: "Descrição curta do projeto para SEO/compartilhamento.",
+    // ogImage: "/images/cliente-exemplo-og.jpg", // opcional — imagem de preview ao compartilhar o link; se ausente, usa `logo`
   },
 
   theme: {
@@ -25,7 +31,9 @@ export const clientConfig: ClientConfig = {
   },
 
   nav: {
+    /** Texto do botão da Galeria no menu (desktop e mobile). */
     galleryLabel: "Acessar Galeria",
+    /** Texto do botão de Prospecção no menu. Só aparece se `prospeccao` (abaixo) não for `null`. */
     prospeccaoCtaLabel: "Prospectar Parceiros",
   },
 
@@ -34,19 +42,26 @@ export const clientConfig: ClientConfig = {
     welcomeLines: ["Sejam bem-vindos,", "Nome do Cliente."],
     /** Vídeo de fundo do Hero. Local (`/videos/...`) ou URL do R2. */
     backgroundVideo: "/videos/hero-background.mp4",
+    /** Frase curta ao lado das métricas (some/aparece com uma animação de "respiração"). */
     paragraph: "Frase curta de contexto exibida ao lado das métricas.",
+    /** Números animados no rodapé do Hero. */
     stats: {
       videos: { count: 0, label: "vídeos produzidos" },
       photos: { count: 0, label: "fotos editadas" },
     },
   },
 
+  /** Seção com o carrossel de fotos em destaque (teaser da Galeria) na Home. */
   features: {
+    /** Texto pequeno acima do heading grande (ex.: "Projeto Inicial"). */
     eyebrow: "Projeto Inicial",
+    /** Heading grande da seção. */
     heading: "Posicionamento e Aquisição.",
+    /** Numeração do bloco (ex.: "01."), ao lado de `blockTitle`. */
     blockNumber: "01.",
     blockTitle: "Fotos Produzidas",
     subtitle: "Descrição curta do que foi captado.",
+    /** Texto do botão que leva pra Galeria completa. */
     galleryButtonLabel: "Acessar Galeria",
     /** Fotos em destaque no carrossel da Home (teaser da galeria completa). */
     photos: [
@@ -55,13 +70,16 @@ export const clientConfig: ClientConfig = {
     ],
   },
 
+  /** Seção com os vídeos (redes sociais + aquisição) na Home. */
   videosSection: {
     eyebrow: "Vídeos",
+    /** Início do heading, seguido de `headingSuffix` numa segunda linha mais apagada. */
     headingPrefix: "Conteúdos",
     headingSuffix: "para redes sociais.",
     blockNumber: "02.",
     blockTitle: "Vídeos Produzidos.",
     subtitle: "Descrição curta dos vídeos de redes sociais.",
+    /** Mesma estrutura acima, mas para o bloco "Conteúdos para aquisição" logo abaixo. */
     acquisitionEyebrow: "Estratégia de Aquisição",
     acquisitionHeadingPrefix: "Conteúdos",
     acquisitionHeadingSuffix: "para aquisição.",
@@ -74,7 +92,11 @@ export const clientConfig: ClientConfig = {
   },
 
   gallery: {
+    /** Códigos que desbloqueiam a Galeria — case-insensitive, aceita mais de um (ex.: um pro
+     *  cliente, um "mestre" pra equipe interna). Nunca fica salvo entre visitas (sem
+     *  localStorage) — pede o código de novo a cada carregamento da página. */
     accessCodes: ["cliente-exemplo"],
+    /** Título mostrado na lock screen antes de desbloquear. */
     lockScreenTitle: "Galeria de Conteúdos",
     // driveUrl: "https://drive.google.com/...", // opcional — se ausente, o convite "Acessar Galeria Completa" some
   },

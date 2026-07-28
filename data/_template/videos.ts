@@ -1,10 +1,14 @@
 import type { ClientVideos } from "@/lib/clients/types";
+import { r2Url } from "@/lib/r2";
 
 /**
  * Vídeos hospedados no bucket público do Cloudflare R2 (arquivos grandes demais para o git).
  * Para um cliente novo, suba os arquivos em `clients/<slug>/videos/` dentro do bucket — esse
  * prefixo por cliente é o padrão a partir daqui (a Pascoal é a única exceção histórica, com
  * vídeos soltos na raiz do bucket; veja `data/README.md`).
+ *
+ * `r2Url(base, filename)` monta a URL com percent-encoding correto — use o nome de arquivo
+ * "legível" (com espaços/acentos se for o caso) em vez de montar a URL na mão.
  */
 const R2_PUBLIC_BASE = "https://<seu-bucket>.r2.dev/clients/cliente-exemplo/videos";
 
@@ -17,8 +21,8 @@ export const clientVideos: ClientVideos = {
       shortTitle: "Título curto", // opcional — cabeçalho do card quando o completo não cabe
       format: "vertical",
       poster: "/images/gallery/video-01-vertical.jpg",
-      videoSrc: `${R2_PUBLIC_BASE}/social-01.mp4`,
-      downloadHref: `${R2_PUBLIC_BASE}/social-01.mp4`,
+      videoSrc: r2Url(R2_PUBLIC_BASE, "social-01.mp4"),
+      downloadHref: r2Url(R2_PUBLIC_BASE, "social-01.mp4"),
       ready: true,
     },
     {
@@ -27,8 +31,8 @@ export const clientVideos: ClientVideos = {
       title: "Título completo do vídeo.",
       format: "vertical",
       poster: "/images/gallery/video-02-vertical.jpg",
-      videoSrc: `${R2_PUBLIC_BASE}/social-02.mp4`,
-      downloadHref: `${R2_PUBLIC_BASE}/social-02.mp4`,
+      videoSrc: r2Url(R2_PUBLIC_BASE, "social-02.mp4"),
+      downloadHref: r2Url(R2_PUBLIC_BASE, "social-02.mp4"),
       ready: true,
     },
     {
@@ -37,8 +41,8 @@ export const clientVideos: ClientVideos = {
       title: "Título completo do vídeo.",
       format: "horizontal",
       poster: "/images/gallery/video-03-horizontal.jpg",
-      videoSrc: `${R2_PUBLIC_BASE}/social-03.mp4`,
-      downloadHref: `${R2_PUBLIC_BASE}/social-03.mp4`,
+      videoSrc: r2Url(R2_PUBLIC_BASE, "social-03.mp4"),
+      downloadHref: r2Url(R2_PUBLIC_BASE, "social-03.mp4"),
       ready: true,
     },
   ],
@@ -48,8 +52,8 @@ export const clientVideos: ClientVideos = {
     title: "Disparo",
     format: "vertical",
     poster: "/images/gallery/video-disparo.jpg",
-    videoSrc: `${R2_PUBLIC_BASE}/acquisition-01.mp4`,
-    downloadHref: `${R2_PUBLIC_BASE}/acquisition-01.mp4`,
+    videoSrc: r2Url(R2_PUBLIC_BASE, "acquisition-01.mp4"),
+    downloadHref: r2Url(R2_PUBLIC_BASE, "acquisition-01.mp4"),
     ready: true,
   },
   presentationVideo: {
@@ -58,8 +62,8 @@ export const clientVideos: ClientVideos = {
     title: "Vídeo de Apresentação",
     format: "horizontal",
     poster: "/images/gallery/video-apresentacao.jpg",
-    videoSrc: `${R2_PUBLIC_BASE}/presentation-02.mp4`,
-    downloadHref: `${R2_PUBLIC_BASE}/presentation-02.mp4`,
+    videoSrc: r2Url(R2_PUBLIC_BASE, "presentation-02.mp4"),
+    downloadHref: r2Url(R2_PUBLIC_BASE, "presentation-02.mp4"),
     ready: true,
   },
 };

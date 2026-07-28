@@ -101,6 +101,15 @@
   .font-display {
     font-family: var(--font-display);
   }
+
+  /* Esconde o botão nativo de play que o iOS/Safari desenha por cima de qualquer <video>
+     pausado (mesmo sem `controls`) quando o autoplay é bloqueado pelo sistema (ex.: Modo de
+     Baixo Consumo). Não força o autoplay — isso é bloqueio do próprio SO — mas evita o ícone
+     de play aparecer no meio do vídeo de fundo do Hero. */
+  .hero-bg-video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    -webkit-appearance: none;
+  }
   
   .text-stroke {
     -webkit-text-stroke: 1.5px currentColor;

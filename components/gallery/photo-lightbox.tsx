@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, Download, X } from "lucide-react";
-import type { GalleryPhoto } from "@/lib/gallery";
+import { optimizedGallerySrc, type GalleryPhoto } from "@/lib/gallery";
 import { useModalBehavior } from "@/hooks/use-modal-behavior";
 
 export function PhotoLightbox({
@@ -80,7 +80,7 @@ export function PhotoLightbox({
       )}
 
       <img
-        src={photo.src}
+        src={optimizedGallerySrc(photo.src, 1920, 85)}
         alt={photo.alt}
         onClick={(event) => event.stopPropagation()}
         className="max-h-[90vh] max-w-[92vw] object-contain"

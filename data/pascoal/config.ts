@@ -8,6 +8,7 @@ export const clientConfig: ClientConfig = {
   metadata: {
     title: "Pascoal Bombas | Posicionamento e Aquisição",
     description: "Projeto de posicionamento, conteúdo e estratégia de aquisição da Pascoal Bombas.",
+    ogImage: "/images/pascoal-equipe-oficina.jpg",
   },
 
   theme: {

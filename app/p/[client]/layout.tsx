@@ -11,7 +11,33 @@ export async function generateMetadata({ params }: { params: Promise<{ client: s
   const { client } = await params;
   const config = getClientConfig(client);
   if (!config) return {};
-  return { title: config.metadata.title, description: config.metadata.description };
+
+  const { title, description, ogImage } = config.metadata;
+  const image = ogImage ?? config.logo;
+  const path = `/p/${client}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      title,
+      description,
+      url: path,
+      siteName: config.brandName,
+      locale: "pt_BR",
+      type: "website",
+      images: [{ url: image }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
+    // Reforça o `app/robots.ts`: entregas de cliente não devem aparecer em buscadores.
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function ClientLayout({ children, params }: { children: ReactNode; params: Promise<{ client: string }> }) {

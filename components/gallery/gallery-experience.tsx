@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { ArrowRight, Home } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Home } from "lucide-react";
 import { LockScreen } from "@/components/gallery/lock-screen";
 import { AnimatedRevealText } from "@/components/shared/animated-reveal-text";
-import type { GalleryFolder } from "@/lib/gallery";
+import { optimizedGallerySrc, type GalleryFolder } from "@/lib/gallery";
 
 const PhotoLightbox = dynamic(() => import("@/components/gallery/photo-lightbox").then((mod) => mod.PhotoLightbox));
 
@@ -118,6 +118,94 @@ function FolderCover({ folder }: { folder: GalleryFolder }) {
   );
 }
 
+/**
+ * Carrossel de pastas com navegação circular: as setas avançam/voltam com wraparound (da
+ * última pasta a seta "próxima" volta pra primeira, e vice-versa), e o índice ativo acompanha
+ * o scroll real (swipe ou setas) via a pasta mais próxima do início visível.
+ */
+function FolderCarousel({ folders, onSelect }: { folders: GalleryFolder[]; onSelect: (id: string) => void }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const slideRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const activeIndexRef = useRef(0);
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      let nearestIndex = 0;
+      let nearestDistance = Infinity;
+      slideRefs.current.forEach((slide, i) => {
+        if (!slide) return;
+        const distance = Math.abs(slide.offsetLeft - el.scrollLeft);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = i;
+        }
+      });
+      activeIndexRef.current = nearestIndex;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const goTo = (index: number) => {
+    const wrapped = (index + folders.length) % folders.length;
+    activeIndexRef.current = wrapped;
+    slideRefs.current[wrapped]?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+  };
+
+  return (
+    <div className="relative">
+      <div
+        ref={trackRef}
+        onWheel={(event) => {
+          if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+            event.currentTarget.scrollBy({ left: event.deltaY, behavior: "smooth" });
+          }
+        }}
+        className="flex w-full cursor-grab touch-pan-y snap-x snap-mandatory gap-5 overflow-x-scroll scroll-smooth pb-2 active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {folders.map((folder, index) => (
+          <button
+            key={folder.id}
+            ref={(el) => { slideRefs.current[index] = el; }}
+            type="button"
+            onClick={() => onSelect(folder.id)}
+            className="group relative aspect-[4/5] w-[78vw] max-w-[320px] shrink-0 snap-start overflow-hidden border border-white/15 bg-background text-left transition-colors hover:border-[var(--client-accent)]/70 sm:w-[55%] sm:max-w-none lg:w-[31%]"
+          >
+            <FolderCover folder={folder} />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-5">
+              <span className="block text-balance font-display text-2xl leading-tight text-white">{folder.label}</span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {folders.length > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={() => goTo(activeIndexRef.current - 1)}
+            aria-label="Pasta anterior"
+            className="absolute left-2 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-background/80 text-white backdrop-blur-sm transition-colors hover:border-[var(--client-accent)] hover:text-[var(--client-accent)]"
+          >
+            <ChevronLeft className="size-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => goTo(activeIndexRef.current + 1)}
+            aria-label="Próxima pasta"
+            className="absolute right-2 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-background/80 text-white backdrop-blur-sm transition-colors hover:border-[var(--client-accent)] hover:text-[var(--client-accent)]"
+          >
+            <ChevronRight className="size-5" />
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
 export type GalleryExperienceProps = {
   folders: GalleryFolder[];
   accessCodes: string[];
@@ -162,29 +250,7 @@ export function GalleryExperience({ folders, accessCodes, lockScreenTitle, logo,
                 {driveUrl && <GalleryHintLink driveUrl={driveUrl} />}
               </header>
 
-              <div
-                onWheel={(event) => {
-                  if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
-                    event.currentTarget.scrollBy({ left: event.deltaY, behavior: "smooth" });
-                  }
-                }}
-                className="flex w-full cursor-grab touch-pan-x snap-x snap-mandatory gap-5 overflow-x-scroll scroll-smooth pb-2 active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              >
-                {folders.map((folder) => (
-                  <button
-                    key={folder.id}
-                    type="button"
-                    onClick={() => setActiveFolderId(folder.id)}
-                    className="group relative aspect-[4/5] w-[78vw] max-w-[320px] shrink-0 snap-start overflow-hidden border border-white/15 bg-background text-left transition-colors hover:border-[var(--client-accent)]/70 sm:w-[55%] sm:max-w-none lg:w-[31%]"
-                  >
-                    <FolderCover folder={folder} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-5">
-                      <span className="block text-balance font-display text-2xl leading-tight text-white">{folder.label}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
+              <FolderCarousel folders={folders} onSelect={setActiveFolderId} />
             </>
           ) : (
             <>
@@ -214,7 +280,15 @@ export function GalleryExperience({ folders, accessCodes, lockScreenTitle, logo,
                       onClick={() => setLightboxIndex(index)}
                       className="group relative overflow-hidden border border-white/10 bg-background transition-colors hover:border-[var(--client-accent)]/70"
                     >
-                      <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                      <img
+                        src={optimizedGallerySrc(photo.src, 640)}
+                        srcSet={`${optimizedGallerySrc(photo.src, 384)} 384w, ${optimizedGallerySrc(photo.src, 640)} 640w, ${optimizedGallerySrc(photo.src, 750)} 750w`}
+                        sizes="(min-width: 1024px) 23vw, (min-width: 640px) 31vw, 46vw"
+                        alt={photo.alt}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
                     </button>
                   ))}
                 </div>

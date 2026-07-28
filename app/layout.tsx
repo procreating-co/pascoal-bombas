@@ -20,10 +20,12 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains'
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
 export const metadata: Metadata = {
-  title: 'Pascoal Bombas | Posicionamento e Aquisição',
-  description: 'Projeto de posicionamento, conteúdo e estratégia de aquisição da Pascoal Bombas.',
-  generator: 'v0.app',
+  metadataBase: new URL(siteUrl),
+  title: 'Procreating — Plataforma de Projetos',
+  description: 'Entrega de projetos de posicionamento digital da Procreating.',
 }
 
 export default function RootLayout({

@@ -145,7 +145,7 @@ export function HeroSection({ welcomeLines, backgroundVideo, paragraph, stats }:
   return (
     <section className="relative min-h-screen overflow-hidden bg-black text-white">
       <div className="absolute inset-0 z-0">
-        <video ref={videoRef} autoPlay muted loop playsInline preload="auto" aria-hidden="true" className="h-full w-full object-cover object-center opacity-75">
+        <video ref={videoRef} autoPlay muted loop playsInline preload="auto" aria-hidden="true" className="hero-bg-video h-full w-full object-cover object-center opacity-75">
           <source src={backgroundVideo} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/55" />
@@ -158,7 +158,7 @@ export function HeroSection({ welcomeLines, backgroundVideo, paragraph, stats }:
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-44 bg-gradient-to-b from-transparent via-black/55 to-background" />
       <div ref={statsRef} className={`absolute bottom-10 left-0 right-0 z-10 transition-all delay-500 duration-1000 sm:bottom-[57px] ${isVisible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}>
         <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-6 sm:grid sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-baseline sm:gap-x-8 sm:gap-y-0 lg:gap-x-12 lg:pl-12 lg:pr-[88px]">
-          <p className="text-balance text-center font-display text-base font-light leading-snug tracking-tight sm:truncate sm:text-left sm:text-3xl sm:leading-none md:text-4xl">
+          <p className="text-balance text-center font-display text-2xl font-light leading-snug tracking-tight sm:truncate sm:text-left sm:text-3xl sm:leading-none md:text-4xl">
             {statsVisible && <span className="inline-block animate-wipe-breathe">{paragraph}</span>}
           </p>
           <div className="flex items-start justify-center gap-8 sm:contents">
