@@ -1,10 +1,9 @@
 /**
- * Código de acesso à área de Prospecção — fixo, só para a fase de testes.
- * Independente do código da Galeria (lib/gallery.ts), mesmo que o valor coincida.
- * Quando for endurecer a segurança, mova essa verificação para o servidor.
+ * Valida o código digitado contra o `accessCode` do módulo de prospecção do
+ * cliente (`config.prospeccao.accessCode`). Independente do código da Galeria,
+ * mesmo que o valor coincida. Quando for endurecer a segurança, mova essa
+ * verificação para o servidor.
  */
-export const PROSPECCAO_ACCESS_CODE = "admin";
-
-export function isValidProspeccaoCode(code: string) {
-  return code.trim().toLowerCase() === PROSPECCAO_ACCESS_CODE;
+export function isValidProspeccaoCode(code: string, accessCode: string) {
+  return code.trim().toLowerCase() === accessCode.trim().toLowerCase();
 }

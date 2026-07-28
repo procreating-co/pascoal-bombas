@@ -44,7 +44,7 @@ export function PhotoLightbox({
       <button
         type="button"
         onClick={onClose}
-        className="absolute right-6 top-6 z-10 flex size-12 items-center justify-center border border-white/20 text-white transition-colors hover:border-[#d4af6a] hover:text-[#d4af6a]"
+        className="absolute right-6 top-6 z-10 flex size-12 items-center justify-center border border-white/20 text-white transition-colors hover:border-[var(--client-accent)] hover:text-[var(--client-accent)]"
         aria-label="Fechar"
       >
         <X className="size-5" />
@@ -54,7 +54,7 @@ export function PhotoLightbox({
         href={photo.src}
         download
         onClick={(event) => event.stopPropagation()}
-        className="absolute left-6 top-6 z-10 flex h-12 items-center gap-2 border border-white/20 px-5 text-sm text-white transition-colors hover:border-[#d4af6a] hover:text-[#d4af6a]"
+        className="absolute left-6 top-6 z-10 flex h-12 items-center gap-2 border border-white/20 px-5 text-sm text-white transition-colors hover:border-[var(--client-accent)] hover:text-[var(--client-accent)]"
       >
         <Download className="size-4" /> Baixar
       </a>
@@ -66,7 +66,7 @@ export function PhotoLightbox({
             event.stopPropagation();
             onPrev();
           }}
-          className="absolute left-4 top-1/2 z-10 flex size-12 -translate-y-1/2 items-center justify-center border border-white/20 text-white transition-colors hover:border-[#d4af6a] hover:text-[#d4af6a] sm:left-6"
+          className="absolute left-4 top-1/2 z-10 flex size-12 -translate-y-1/2 items-center justify-center border border-white/20 text-white transition-colors hover:border-[var(--client-accent)] hover:text-[var(--client-accent)] sm:left-6"
           aria-label="Foto anterior"
         >
           <ChevronLeft className="size-5" />
@@ -79,7 +79,7 @@ export function PhotoLightbox({
             event.stopPropagation();
             onNext();
           }}
-          className="absolute right-4 top-1/2 z-10 flex size-12 -translate-y-1/2 items-center justify-center border border-white/20 text-white transition-colors hover:border-[#d4af6a] hover:text-[#d4af6a] sm:right-6"
+          className="absolute right-4 top-1/2 z-10 flex size-12 -translate-y-1/2 items-center justify-center border border-white/20 text-white transition-colors hover:border-[var(--client-accent)] hover:text-[var(--client-accent)] sm:right-6"
           aria-label="Próxima foto"
         >
           <ChevronRight className="size-5" />

@@ -2,9 +2,7 @@
 
 import { memo, useEffect, useRef, useState, type ReactNode } from "react";
 import { Car, ClipboardList, Handshake, Send, type LucideIcon } from "lucide-react";
-
-/** Data-alvo do desbloqueio: 30/07/2026 às 00:00, horário de Brasília (UTC-3). */
-const UNLOCK_AT = "2026-07-30T00:00:00-03:00";
+import type { ProspeccaoConfig } from "@/lib/clients/types";
 
 function useCountdown(targetISO: string) {
   const [msLeft, setMsLeft] = useState<number | null>(null);
@@ -34,7 +32,7 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
     <div className="flex flex-col items-center">
       <span
         key={value}
-        className="animate-char-in block font-display text-2xl tabular-nums text-[#d4af6a] drop-shadow-[0_0_18px_rgba(212,175,106,0.4)] sm:text-4xl lg:text-5xl"
+        className="animate-char-in block font-display text-2xl tabular-nums text-[var(--client-accent)] drop-shadow-[0_0_18px_rgba(212,175,106,0.4)] sm:text-4xl lg:text-5xl"
       >
         {String(value).padStart(2, "0")}
       </span>
@@ -63,7 +61,7 @@ const FunnelStep = memo(function FunnelStep({ icon: Icon, label, active }: { ico
     <Tooltip label={label}>
       <div
         className={`flex size-14 items-center justify-center rounded-full border transition-colors duration-500 lg:size-16 ${
-          active ? "border-transparent bg-[#d4af6a]/10 text-[#d4af6a] shadow-[0_0_28px_rgba(212,175,106,0.5)]" : "border-white/15 bg-white/[0.03] text-white/50"
+          active ? "border-transparent bg-[var(--client-accent)]/10 text-[var(--client-accent)] shadow-[0_0_28px_rgba(212,175,106,0.5)]" : "border-white/15 bg-white/[0.03] text-white/50"
         }`}
       >
         <Icon className="size-6 lg:size-7" />
@@ -74,26 +72,25 @@ const FunnelStep = memo(function FunnelStep({ icon: Icon, label, active }: { ico
 
 /** Funil de aquisição em ícones (sem texto): lista de oficinas → disparo de vídeos → reunião.
  *  Os círculos acendem em sequência, tipo semáforo, cada um preenchendo o próprio anel. */
-const AcquisitionFunnel = memo(function AcquisitionFunnel({ activeStep }: { activeStep: number }) {
+const AcquisitionFunnel = memo(function AcquisitionFunnel({ activeStep, labels }: { activeStep: number; labels: [string, string, string] }) {
   return (
     <div className="flex items-center justify-center gap-3 lg:gap-5">
-      <FunnelStep icon={ClipboardList} label="Lista de Prospecção" active={activeStep === 0} />
-      <div className="h-px w-6 bg-gradient-to-r from-white/15 to-[#d4af6a]/40 lg:w-10" />
-      <FunnelStep icon={Send} label="Script de Prospecção" active={activeStep === 1} />
-      <div className="h-px w-6 bg-gradient-to-r from-[#d4af6a]/40 to-[#d4af6a] lg:w-10" />
-      <FunnelStep icon={Handshake} label="Reunião Estratégica" active={activeStep === 2} />
+      <FunnelStep icon={ClipboardList} label={labels[0]} active={activeStep === 0} />
+      <div className="h-px w-6 bg-gradient-to-r from-white/15 to-[var(--client-accent)]/40 lg:w-10" />
+      <FunnelStep icon={Send} label={labels[1]} active={activeStep === 1} />
+      <div className="h-px w-6 bg-gradient-to-r from-[var(--client-accent)]/40 to-[var(--client-accent)] lg:w-10" />
+      <FunnelStep icon={Handshake} label={labels[2]} active={activeStep === 2} />
     </div>
   );
 });
 
-const TYPING_WORDS = ["Oficinas", "Parceiros", "Negócios"];
 const TYPE_MS = 70;
 const ERASE_MS = 40;
 const FIRST_PAUSE_MS = 10000;
 const NEXT_PAUSE_MS = 5000;
 
-/** "Prospecção de [palavra]" com a última palavra trocando em efeito de máquina de escrever. */
-function TypingSuffix({ start }: { start: boolean }) {
+/** "<prefixo> [palavra]" com a última palavra trocando em efeito de máquina de escrever. */
+function TypingSuffix({ start, words }: { start: boolean; words: [string, string, string] }) {
   const [text, setText] = useState("");
   const startedRef = useRef(false);
 
@@ -132,10 +129,10 @@ function TypingSuffix({ start }: { start: boolean }) {
     };
 
     const cycle = (index: number, pauseBeforeSwap: number) => {
-      typeWord(TYPING_WORDS[index], () => {
+      typeWord(words[index], () => {
         schedule(() => {
-          eraseWord(TYPING_WORDS[index], () => {
-            cycle((index + 1) % TYPING_WORDS.length, NEXT_PAUSE_MS);
+          eraseWord(words[index], () => {
+            cycle((index + 1) % words.length, NEXT_PAUSE_MS);
           });
         }, pauseBeforeSwap);
       });
@@ -152,7 +149,7 @@ function TypingSuffix({ start }: { start: boolean }) {
   return (
     <>
       {text}
-      <span className="animate-pulse text-[#d4af6a]">|</span>
+      <span className="animate-pulse text-[var(--client-accent)]">|</span>
     </>
   );
 }
@@ -161,21 +158,26 @@ function TypingSuffix({ start }: { start: boolean }) {
 function CarTrack() {
   return (
     <div className="pointer-events-none absolute inset-x-6 bottom-0 h-4 overflow-hidden sm:inset-x-10" aria-hidden="true">
-      <Car className="absolute bottom-0 size-4 translate-y-[3px] text-[#d4af6a]/70 animate-race" style={{ animationDuration: "6.5s", animationDelay: "0s" }} />
+      <Car className="absolute bottom-0 size-4 translate-y-[3px] text-[var(--client-accent)]/70 animate-race" style={{ animationDuration: "6.5s", animationDelay: "0s" }} />
       <Car className="absolute bottom-0 size-3 translate-y-[3px] text-white/25 animate-race" style={{ animationDuration: "8.5s", animationDelay: "2.5s" }} />
-      <Car className="absolute bottom-0 size-3.5 translate-y-[3px] text-[#d4af6a]/45 animate-race" style={{ animationDuration: "7.5s", animationDelay: "4.8s" }} />
+      <Car className="absolute bottom-0 size-3.5 translate-y-[3px] text-[var(--client-accent)]/45 animate-race" style={{ animationDuration: "7.5s", animationDelay: "4.8s" }} />
     </div>
   );
 }
 
-export function InfrastructureSection() {
+export type InfrastructureSectionProps = {
+  prospeccao: ProspeccaoConfig;
+  prospeccaoHref: string;
+};
+
+export function InfrastructureSection({ prospeccao, prospeccaoHref }: InfrastructureSectionProps) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const countdownRef = useRef<HTMLDivElement>(null);
   const funnelRef = useRef<HTMLDivElement>(null);
   const [matchedWidth, setMatchedWidth] = useState<number | null>(null);
   const [funnelWidth, setFunnelWidth] = useState<number | null>(null);
-  const { locked, days, hours, minutes, seconds } = useCountdown(UNLOCK_AT);
+  const { locked, days, hours, minutes, seconds } = useCountdown(prospeccao.unlockAt);
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => entry.isIntersecting && setIsVisible(true), { threshold: 0.1 });
@@ -231,20 +233,20 @@ export function InfrastructureSection() {
             className="pointer-events-none absolute -inset-x-10 -inset-y-16 -z-10 rounded-[3rem] opacity-50 blur-[100px] transition-opacity duration-700 group-hover:opacity-80 sm:-inset-x-16 sm:-inset-y-20"
             style={{ background: "radial-gradient(closest-side, rgba(212,175,106,0.32), transparent 75%)" }}
           />
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-12 text-center backdrop-blur-2xl transition-colors duration-500 hover:border-[#d4af6a]/40 sm:px-10 sm:py-16 lg:px-16 lg:py-20">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-12 text-center backdrop-blur-2xl transition-colors duration-500 hover:border-[var(--client-accent)]/40 sm:px-10 sm:py-16 lg:px-16 lg:py-20">
             {locked && <CarTrack />}
 
             <div className="relative z-10">
-              <span className="mb-3 inline-flex items-center gap-3 font-mono text-sm text-muted-foreground"><span className="h-px w-12 bg-[#d4af6a]" />Estratégia de Aquisição<span className="h-px w-12 bg-[#d4af6a]" /></span>
+              <span className="mb-3 inline-flex items-center gap-3 font-mono text-sm text-muted-foreground"><span className="h-px w-12 bg-[var(--client-accent)]" />{prospeccao.eyebrow}<span className="h-px w-12 bg-[var(--client-accent)]" /></span>
               <h2 className="text-balance font-display text-4xl leading-[0.95] tracking-tight sm:text-5xl md:text-7xl lg:text-[92px]">
-                <span className="block lg:inline">Prospecção de</span>{" "}
-                <span className="block lg:inline"><TypingSuffix start={isVisible} /></span>
+                <span className="block lg:inline">{prospeccao.headingPrefix}</span>{" "}
+                <span className="block lg:inline"><TypingSuffix start={isVisible} words={prospeccao.typingWords} /></span>
               </h2>
 
               {locked && (
                 <>
                   <div ref={funnelRef} className="mt-10 lg:mt-14">
-                    <AcquisitionFunnel activeStep={activeStep} />
+                    <AcquisitionFunnel activeStep={activeStep} labels={prospeccao.funnelSteps} />
                   </div>
 
                   <div ref={countdownRef} className="mt-10 inline-flex flex-wrap items-center justify-center lg:mt-14">
@@ -261,12 +263,12 @@ export function InfrastructureSection() {
 
               <div className="mt-10 flex justify-center lg:mt-14">
                 <a
-                  href="/prospeccao"
+                  href={prospeccaoHref}
                   style={buttonWidthStyle}
-                  className="inline-flex h-16 w-full max-w-md items-center justify-center gap-3 rounded-full bg-[#d4af6a] text-base font-medium text-black shadow-[0_8px_30px_rgba(212,175,106,0.35)] transition-all hover:scale-[1.04] hover:shadow-[0_10px_40px_rgba(212,175,106,0.5)]"
+                  className="inline-flex h-16 w-full max-w-md items-center justify-center gap-3 rounded-full bg-[var(--client-accent)] text-base font-medium text-black shadow-[0_8px_30px_rgba(212,175,106,0.35)] transition-all hover:scale-[1.04] hover:shadow-[0_10px_40px_rgba(212,175,106,0.5)]"
                 >
                   <Handshake className="size-5" />
-                  Acessar Central de Prospecção.
+                  {prospeccao.ctaLabel}
                 </a>
               </div>
             </div>

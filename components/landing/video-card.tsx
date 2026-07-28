@@ -33,11 +33,11 @@ export function VideoCard({ video, titleOverride, badgeOverride, bare, stretch, 
   return (
     <article className={`group ${stretch ? "flex flex-col lg:h-full" : ""} ${isHorizontal ? "py-4 lg:py-5" : "bg-black p-5 lg:p-7"} ${className ?? ""}`}>
       <div className="mb-4 flex shrink-0 items-center gap-4 lg:mb-5">
-        <span className="shrink-0 font-display text-3xl text-[#d4af6a]">{video.number}.</span>
+        <span className="shrink-0 font-display text-3xl text-[var(--client-accent)]">{video.number}.</span>
         <h3 className="min-w-0 shrink text-balance text-left font-display text-xl leading-snug lg:text-2xl">{title}</h3>
         <span className="h-px min-w-6 flex-1 bg-white/15" />
         {video.ready ? (
-          <a href={video.downloadHref} download className="flex size-10 shrink-0 items-center justify-center border border-white/15 text-white/55 transition-colors hover:border-[#d4af6a] hover:text-[#d4af6a]" aria-label={`Baixar vídeo ${video.number}`}><Download className="size-4" /></a>
+          <a href={video.downloadHref} download className="flex size-10 shrink-0 items-center justify-center border border-white/15 text-white/55 transition-colors hover:border-[var(--client-accent)] hover:text-[var(--client-accent)]" aria-label={`Baixar vídeo ${video.number}`}><Download className="size-4" /></a>
         ) : (
           <span className="shrink-0 font-mono text-[10px] uppercase tracking-wide text-white/35">{badgeOverride ?? "Em produção"}</span>
         )}
@@ -46,7 +46,7 @@ export function VideoCard({ video, titleOverride, badgeOverride, bare, stretch, 
         <button type="button" onClick={onOpen} className={`relative block ${mediaClass} w-full overflow-hidden text-left`} aria-label={`Abrir vídeo em tela cheia: ${title}`}>
           <VideoPoster item={video} />
           <span className="absolute inset-0 bg-black/20 transition-colors group-hover:bg-black/35" />
-          <span className="absolute left-1/2 top-1/2 flex size-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-black/35 text-white backdrop-blur-sm transition-all group-hover:scale-110 group-hover:border-[#d4af6a] group-hover:text-[#d4af6a]"><Play className="ml-1 size-5 fill-current" /></span>
+          <span className="absolute left-1/2 top-1/2 flex size-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-black/35 text-white backdrop-blur-sm transition-all group-hover:scale-110 group-hover:border-[var(--client-accent)] group-hover:text-[var(--client-accent)]"><Play className="ml-1 size-5 fill-current" /></span>
         </button>
       ) : (
         <div className={`relative block ${mediaClass} w-full overflow-hidden opacity-60`} aria-hidden="true">

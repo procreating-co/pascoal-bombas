@@ -67,7 +67,7 @@ function GalleryHintLink() {
       href={DRIVE_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-2 whitespace-nowrap font-mono text-xs uppercase tracking-wide text-muted-foreground transition-colors hover:text-[#d4af6a] sm:text-sm ${
+      className={`inline-flex items-center gap-2 whitespace-nowrap font-mono text-xs uppercase tracking-wide text-muted-foreground transition-colors hover:text-[var(--client-accent)] sm:text-sm ${
         notify ? "animate-[hint-pulse_900ms_ease-in-out]" : ""
       }`}
     >
@@ -152,7 +152,7 @@ export function GalleryExperience({ folders }: { folders: GalleryFolder[] }) {
         <a
           href="/"
           aria-label="Voltar para a página inicial"
-          className="fixed left-3 top-6 z-50 flex size-12 items-center justify-center text-foreground/70 transition-colors hover:text-[#d4af6a] lg:left-9 lg:top-8"
+          className="fixed left-3 top-6 z-50 flex size-12 items-center justify-center text-foreground/70 transition-colors hover:text-[var(--client-accent)] lg:left-9 lg:top-8"
         >
           <Home className="size-6" />
         </a>
@@ -182,7 +182,7 @@ export function GalleryExperience({ folders }: { folders: GalleryFolder[] }) {
                     key={folder.id}
                     type="button"
                     onClick={() => setActiveFolderId(folder.id)}
-                    className="group relative aspect-[4/5] w-[78vw] max-w-[320px] shrink-0 snap-start overflow-hidden border border-white/15 bg-background text-left transition-colors hover:border-[#d4af6a]/70 sm:w-[55%] sm:max-w-none lg:w-[31%]"
+                    className="group relative aspect-[4/5] w-[78vw] max-w-[320px] shrink-0 snap-start overflow-hidden border border-white/15 bg-background text-left transition-colors hover:border-[var(--client-accent)]/70 sm:w-[55%] sm:max-w-none lg:w-[31%]"
                   >
                     <FolderCover folder={folder} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
@@ -219,7 +219,7 @@ export function GalleryExperience({ folders }: { folders: GalleryFolder[] }) {
                       key={photo.src}
                       type="button"
                       onClick={() => setLightboxIndex(index)}
-                      className="group relative overflow-hidden border border-white/10 bg-background transition-colors hover:border-[#d4af6a]/70"
+                      className="group relative overflow-hidden border border-white/10 bg-background transition-colors hover:border-[var(--client-accent)]/70"
                     >
                       <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     </button>

@@ -4,6 +4,10 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* Cor de destaque do cliente ativo — sobrescrita por cliente via `theme.accentColor`
+     (injetada como inline style no layout de `/p/[client]`). O valor abaixo é o fallback
+     (Pascoal), garantindo que nada quebre se algo renderizar fora desse wrapper. */
+  --client-accent: #d4af6a;
   --background: oklch(0.06 0.008 260);
   --foreground: oklch(0.94 0.005 90);
   --card: oklch(0.09 0.008 260);

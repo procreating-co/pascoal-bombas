@@ -25,7 +25,7 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
         <Image src="/images/pascoal-logo.png" alt="Pascoal Bombas" fill sizes="192px" className="scale-[1.8] object-cover" />
       </div>
       <span className="mt-2 inline-flex items-center gap-3 font-mono text-sm text-white/45">
-        <span className="h-px w-12 bg-[#d4af6a]" />Acesso restrito<span className="h-px w-12 bg-[#d4af6a]" />
+        <span className="h-px w-12 bg-[var(--client-accent)]" />Acesso restrito<span className="h-px w-12 bg-[var(--client-accent)]" />
       </span>
       <h1 className="mt-6 text-balance text-center font-display text-4xl leading-[0.95] tracking-tight sm:text-5xl">Central de Prospecção</h1>
 
@@ -42,7 +42,7 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
             }}
             placeholder="Código de acesso"
             className={`h-14 w-full border bg-white/[0.03] pl-5 pr-12 font-mono text-lg tracking-widest text-white placeholder:text-white/30 focus:outline-none ${
-              error ? "border-red-500/60" : "border-white/15 focus:border-[#d4af6a]"
+              error ? "border-red-500/60" : "border-white/15 focus:border-[var(--client-accent)]"
             }`}
           />
           <button
@@ -57,7 +57,7 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
         {error && <span className="font-mono text-xs uppercase tracking-wide text-red-400">Código incorreto. Tente novamente.</span>}
         <button
           type="submit"
-          className="inline-flex h-14 w-full items-center justify-center rounded-full bg-[#d4af6a] text-base font-medium text-black transition-transform hover:scale-[1.02]"
+          className="inline-flex h-14 w-full items-center justify-center rounded-full bg-[var(--client-accent)] text-base font-medium text-black transition-transform hover:scale-[1.02]"
         >
           Entrar
         </button>

@@ -4,7 +4,15 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Handshake, Images, Menu, X } from "lucide-react";
 
-export function Navigation() {
+export type NavigationProps = {
+  brandName: string;
+  galleryHref: string;
+  galleryLabel: string;
+  prospeccaoCtaLabel: string;
+  showProspeccaoCta: boolean;
+};
+
+export function Navigation({ brandName, galleryHref, galleryLabel, prospeccaoCtaLabel, showProspeccaoCta }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -65,7 +73,7 @@ export function Navigation() {
           >
             {/* Logo */}
             <a href="/" className="group flex items-center">
-              <span className={`font-display tracking-tight transition-all duration-500 ${isScrolled ? "text-xl text-foreground" : "text-2xl text-white"}`}>Pascoal Bombas</span>
+              <span className={`font-display tracking-tight transition-all duration-500 ${isScrolled ? "text-xl text-foreground" : "text-2xl text-white"}`}>{brandName}</span>
             </a>
 
             {/* Desktop CTA */}
@@ -75,21 +83,23 @@ export function Navigation() {
                 size="sm"
                 className={`rounded-full transition-all duration-500 ${isScrolled ? "bg-foreground hover:bg-foreground/90 text-background px-4 h-8 text-xs" : "bg-white hover:bg-white/90 text-black px-6"}`}
               >
-                <a href="/galeria" className="inline-flex items-center gap-2">
+                <a href={galleryHref} className="inline-flex items-center gap-2">
                   <Images className="size-3.5" />
-                  Acessar Galeria
+                  {galleryLabel}
                 </a>
               </Button>
-              <Button
-                asChild
-                size="sm"
-                className={`rounded-full bg-[#d4af6a] text-black transition-all duration-500 hover:bg-[#e0bd7d] ${isScrolled ? "h-8 px-4 text-xs" : "px-6"}`}
-              >
-                <a href="#estrategia-aquisicao" className="inline-flex items-center gap-2">
-                  <Handshake className="size-3.5" />
-                  Prospectar Parceiros
-                </a>
-              </Button>
+              {showProspeccaoCta && (
+                <Button
+                  asChild
+                  size="sm"
+                  className={`rounded-full bg-[var(--client-accent)] text-black transition-all duration-500 hover:bg-[#e0bd7d] ${isScrolled ? "h-8 px-4 text-xs" : "px-6"}`}
+                >
+                  <a href="#estrategia-aquisicao" className="inline-flex items-center gap-2">
+                    <Handshake className="size-3.5" />
+                    {prospeccaoCtaLabel}
+                  </a>
+                </Button>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -122,20 +132,22 @@ export function Navigation() {
               asChild
               className="bg-foreground text-background rounded-full h-14 text-base"
             >
-              <a href="/galeria" onClick={() => setIsMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2">
+              <a href={galleryHref} onClick={() => setIsMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2">
                 <Images className="size-4" />
-                Acessar Galeria
+                {galleryLabel}
               </a>
             </Button>
-            <Button
-              asChild
-              className="bg-[#d4af6a] text-black rounded-full h-14 text-base hover:bg-[#e0bd7d]"
-            >
-              <a href="#estrategia-aquisicao" onClick={() => setIsMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2">
-                <Handshake className="size-4" />
-                Prospectar Parceiros
-              </a>
-            </Button>
+            {showProspeccaoCta && (
+              <Button
+                asChild
+                className="bg-[var(--client-accent)] text-black rounded-full h-14 text-base hover:bg-[#e0bd7d]"
+              >
+                <a href="#estrategia-aquisicao" onClick={() => setIsMobileMenuOpen(false)} className="inline-flex items-center justify-center gap-2">
+                  <Handshake className="size-4" />
+                  {prospeccaoCtaLabel}
+                </a>
+              </Button>
+            )}
           </div>
         </div>
       </header>

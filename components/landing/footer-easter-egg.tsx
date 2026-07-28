@@ -2,46 +2,43 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const LINES = [
-  "Nossas captações geraram 8 horas de material bruto...",
-  "Muito desse material não pode estar aqui, mas ainda pode ser aproveitado!",
-  "Queremos em breve apresentar uma forma de continuarmos essa parceria...",
-];
-const HIGHLIGHT_LINE_INDEX = 2;
-const HIGHLIGHT_WORD = "em breve";
-
 const TYPE_MS = 42;
 const LINE_PAUSE_MS = 300;
 const AT_BOTTOM_DELAY_MS = 2000;
 const HOLD_MS = 2000;
 const FADE_MS = 700;
 
-function renderLine(lineIndex: number, typedLength: number) {
-  const text = LINES[lineIndex];
+function renderLine(lines: string[], highlightWord: string, lineIndex: number, typedLength: number) {
+  const text = lines[lineIndex];
   const typed = text.slice(0, typedLength);
-  if (lineIndex !== HIGHLIGHT_LINE_INDEX) return typed;
+  const start = text.indexOf(highlightWord);
+  if (start === -1) return typed;
 
-  const start = text.indexOf(HIGHLIGHT_WORD);
-  const end = start + HIGHLIGHT_WORD.length;
+  const end = start + highlightWord.length;
   const before = typed.slice(0, Math.min(typedLength, start));
   const highlighted = typed.slice(start, Math.min(typedLength, end));
   const after = typed.slice(end, typedLength);
   return (
     <>
       {before}
-      <span className="text-[#d4af6a]">{highlighted}</span>
+      <span className="text-[var(--client-accent)]">{highlighted}</span>
       {after}
     </>
   );
 }
 
+export type FooterEasterEggProps = {
+  lines: string[];
+  highlightWord: string;
+};
+
 /**
  * Ao permanecer 2s parado no rodapé da página (uma única vez por sessão), abre um overlay
  * cinematográfico com digitação linha a linha.
  */
-export function FooterEasterEgg() {
+export function FooterEasterEgg({ lines, highlightWord }: FooterEasterEggProps) {
   const [visible, setVisible] = useState(false);
-  const [typedLengths, setTypedLengths] = useState<number[]>(() => LINES.map(() => 0));
+  const [typedLengths, setTypedLengths] = useState<number[]>(() => lines.map(() => 0));
   const [done, setDone] = useState(false);
   const [closing, setClosing] = useState(false);
   const triggeredRef = useRef(false);
@@ -88,7 +85,7 @@ export function FooterEasterEgg() {
 
     const typeLine = (lineIndex: number, onDone: () => void) => {
       let i = 0;
-      const text = LINES[lineIndex];
+      const text = lines[lineIndex];
       const step = () => {
         if (cancelled) return;
         setTypedLengths((prev) => {
@@ -104,7 +101,7 @@ export function FooterEasterEgg() {
     };
 
     const typeAll = (lineIndex: number) => {
-      if (lineIndex >= LINES.length) {
+      if (lineIndex >= lines.length) {
         setDone(true);
         schedule(() => setClosing(true), HOLD_MS);
         return;
@@ -127,7 +124,7 @@ export function FooterEasterEgg() {
 
   if (!visible) return null;
 
-  const activeLineIndex = LINES.findIndex((line, index) => typedLengths[index] < line.length);
+  const activeLineIndex = lines.findIndex((line, index) => typedLengths[index] < line.length);
 
   return (
     <div
@@ -139,9 +136,9 @@ export function FooterEasterEgg() {
       }`}
     >
       <div className="max-w-2xl space-y-3">
-        {LINES.map((line, index) => (
+        {lines.map((line, index) => (
           <p key={line} className="text-balance font-display text-xl leading-relaxed text-white sm:text-2xl md:text-3xl">
-            {renderLine(index, typedLengths[index])}
+            {renderLine(lines, highlightWord, index, typedLengths[index])}
             {!done && index === activeLineIndex && <span className="animate-pulse">|</span>}
           </p>
         ))}
