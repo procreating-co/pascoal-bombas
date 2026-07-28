@@ -36,10 +36,8 @@ export const clientConfig: ClientConfig = {
     backgroundVideo: "/videos/hero-background.mp4",
     paragraph: "Frase curta de contexto exibida ao lado das métricas.",
     stats: {
-      videosCount: 0,
-      videosLabel: "vídeos produzidos",
-      photosCount: 0,
-      photosLabel: "fotos editadas",
+      videos: { count: 0, label: "vídeos produzidos" },
+      photos: { count: 0, label: "fotos editadas" },
     },
   },
 
@@ -74,16 +72,6 @@ export const clientConfig: ClientConfig = {
     legalLine: "Desenvolvido para Razão Social Ltda.\nCNPJ 00.000.000/0001-00.",
     // backgroundImage: "/images/footer-earth-gradient.png", // opcional — se ausente, usa a imagem padrão do template
   },
-
-  /**
-   * Overlay cinematográfico ao parar 2s no rodapé. Deixe `null` para desativar
-   * completamente esse easter egg neste cliente.
-   */
-  footerEasterEgg: null,
-  // footerEasterEgg: {
-  //   lines: ["Primeira linha digitada.", "Segunda linha, com uma palavra em destaque."],
-  //   highlightWord: "em destaque", // precisa ser um substring exato de alguma linha acima
-  // },
 
   gallery: {
     accessCodes: ["cliente-exemplo"],

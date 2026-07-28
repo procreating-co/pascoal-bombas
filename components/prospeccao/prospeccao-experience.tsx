@@ -3,29 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Lock, LockOpen } from "lucide-react";
 import { LockScreen } from "@/components/prospeccao/lock-screen";
+import { AnimatedRevealText } from "@/components/shared/animated-reveal-text";
+import { useCountdown } from "@/hooks/use-countdown";
 
 const CLICK_FEEDBACK_MS = 600;
 const TOAST_MS = 2200;
-
-function useCountdown(targetISO: string) {
-  const [msLeft, setMsLeft] = useState<number | null>(null);
-
-  useEffect(() => {
-    const target = new Date(targetISO).getTime();
-    const tick = () => setMsLeft(Math.max(0, target - Date.now()));
-    tick();
-    const interval = setInterval(tick, 1000);
-    return () => clearInterval(interval);
-  }, [targetISO]);
-
-  const totalSeconds = Math.floor((msLeft ?? 0) / 1000);
-  return {
-    days: Math.floor(totalSeconds / 86400),
-    hours: Math.floor((totalSeconds % 86400) / 3600),
-    minutes: Math.floor((totalSeconds % 3600) / 60),
-    seconds: totalSeconds % 60,
-  };
-}
 
 function CountdownUnit({ value, label }: { value: number; label: string }) {
   return (
@@ -35,23 +17,6 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
       </span>
       <span className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-black/35">{label}</span>
     </div>
-  );
-}
-
-function AnimatedTitleText({ text }: { text: string }) {
-  return (
-    <span aria-label={text}>
-      {text.split("").map((character, index) => (
-        <span
-          key={`${character}-${index}`}
-          aria-hidden="true"
-          className="inline-block animate-[name-reveal_700ms_ease-out_both] motion-reduce:animate-none"
-          style={{ animationDelay: `${index * 26}ms` }}
-        >
-          {character === " " ? " " : character}
-        </span>
-      ))}
-    </span>
   );
 }
 
@@ -126,7 +91,7 @@ export function ProspeccaoExperience({ accessCode, unlockAt, title, toastText, l
       </a>
 
       <h1 className="text-balance font-display text-4xl leading-[0.95] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-        <AnimatedTitleText text={title} />
+        <AnimatedRevealText text={title} delayMs={26} />
       </h1>
 
       <div className="relative mt-10 lg:mt-14">

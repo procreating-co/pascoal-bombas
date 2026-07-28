@@ -5,46 +5,9 @@ import Image from "next/image";
 
 type FeaturedPhoto = { src: string | null; alt: string; category: string };
 
-const AUTO_ADVANCE_MS = 2000;
-
 function PhotoCarousel({ isVisible, photos, galleryHref }: { isVisible: boolean; photos: FeaturedPhoto[]; galleryHref: string }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-  const pausedRef = useRef(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 1023px)");
-    if (!mql.matches) return;
-
-    let index = 0;
-    const interval = setInterval(() => {
-      if (pausedRef.current) return;
-      index = (index + 1) % photos.length;
-      slideRefs.current[index]?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
-    }, AUTO_ADVANCE_MS);
-    return () => clearInterval(interval);
-  }, []);
-
-  const pause = () => { pausedRef.current = true; };
-  const resume = () => { pausedRef.current = false; };
-
-  // O auto-advance chama scrollIntoView, que pode reposicionar a página verticalmente se a
-  // galeria estiver parcialmente visível no momento do tick. Pausamos sempre que a página está
-  // sendo rolada (inclusive por inércia, fora do próprio carrossel) para nunca competir com o
-  // scroll do usuário — e só retomamos depois de um pequeno período sem novos eventos de scroll.
-  useEffect(() => {
-    let idleTimer: ReturnType<typeof setTimeout>;
-    const onWindowScroll = () => {
-      pausedRef.current = true;
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => { pausedRef.current = false; }, 300);
-    };
-    window.addEventListener("scroll", onWindowScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onWindowScroll);
-      clearTimeout(idleTimer);
-    };
-  }, []);
 
   // No touque, o track fica com `touch-action: pan-y` (rolagem vertical nativa e prioritária).
   // Só assumimos o gesto horizontal manualmente quando o próprio movimento do dedo confirma
@@ -77,7 +40,6 @@ function PhotoCarousel({ isVisible, photos, galleryHref }: { isVisible: boolean;
       startX = lastX = touch.clientX;
       startY = touch.clientY;
       axis = null;
-      pause();
     };
 
     const onTouchMove = (event: TouchEvent) => {
@@ -107,7 +69,6 @@ function PhotoCarousel({ isVisible, photos, galleryHref }: { isVisible: boolean;
         settleToNearestSlide();
       }
       axis = null;
-      resume();
     };
 
     el.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -130,9 +91,6 @@ function PhotoCarousel({ isVisible, photos, galleryHref }: { isVisible: boolean;
           event.currentTarget.scrollBy({ left: event.deltaY, behavior: "smooth" });
         }
       }}
-      onPointerDown={pause}
-      onPointerUp={resume}
-      onPointerCancel={resume}
       className="flex w-full cursor-grab touch-pan-y snap-x snap-mandatory gap-4 overflow-x-scroll scroll-smooth pb-2 active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {photos.map((photo, index) => (

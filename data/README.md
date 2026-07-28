@@ -11,9 +11,8 @@ props, carregadas por `lib/clients/`.
 2. **Preencha `data/<slug>/config.ts`**: todo campo sem `?` é obrigatório — o `npx tsc --noEmit`
    falha imediatamente apontando o que falta, então não tem como esquecer nada essencial.
    - `theme.accentColor`: vira `var(--client-accent)` em toda a UI automaticamente.
-   - `footerEasterEgg` e `prospeccao` são opcionais: deixe `null` para desativá-los
-     completamente (a rota `/p/<slug>/prospeccao` faz 404, a seção some da Home, o CTA
-     some do menu).
+   - `prospeccao` é opcional: deixe `null` para desativá-lo completamente (a rota
+     `/p/<slug>/prospeccao` faz 404, a seção some da Home, o CTA some do menu).
 3. **Preencha `data/<slug>/videos.ts`**: suba os vídeos no bucket do Cloudflare R2 em
    `clients/<slug>/videos/<arquivo>.mp4` (esse prefixo por cliente é o padrão a partir daqui —
    veja a nota sobre a Pascoal abaixo) e aponte `videoSrc`/`downloadHref` para a URL pública.

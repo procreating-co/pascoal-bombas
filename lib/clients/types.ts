@@ -7,10 +7,14 @@
  * essencial, o build/type-check falha imediatamente em vez de quebrar em produção.
  */
 
+/** Orientação do vídeo — define qual card/aspect-ratio ele ocupa. */
 export type VideoFormat = "horizontal" | "vertical";
 
+/** Um vídeo do projeto (redes sociais ou aquisição), com pôster, fonte e link de download. */
 export type VideoItem = {
+  /** Identificador estável (chave React, não exibido). */
   id: string;
+  /** Numeração exibida ao lado do título (ex.: "01"). */
   number: string;
   /** Título completo (usado como legenda no lightbox). */
   title: string;
@@ -25,6 +29,7 @@ export type VideoItem = {
   ready: boolean;
 };
 
+/** Os 5 vídeos do projeto, agrupados nos dois blocos onde aparecem na Home. */
 export type ClientVideos = {
   /** Bloco "Conteúdos para redes sociais" — ordem de exibição = ordem do array. */
   socialVideos: VideoItem[];
@@ -33,13 +38,20 @@ export type ClientVideos = {
   presentationVideo: VideoItem;
 };
 
+/** Par número+rótulo usado nas métricas do Hero (ex.: "05" + "vídeos produzidos"). */
+export type Metric = { count: number; label: string };
+
+/** Uma foto da Galeria, já resolvida com sua URL pública. */
 export type GalleryPhoto = { src: string; alt: string };
+/** Uma pasta da Galeria com suas fotos já carregadas do filesystem. */
 export type GalleryFolder = { id: string; label: string; photos: GalleryPhoto[] };
 /** Metadata de uma pasta da galeria — as fotos em si vêm do filesystem (`public/gallery/<slug>/<id>/`). */
 export type GalleryFolderDef = { id: string; label: string };
 
+/** Foto em destaque no carrossel da Home (teaser da Galeria completa). */
 export type FeaturedPhoto = { src: string; alt: string; category: string };
 
+/** Configuração do módulo opcional de Prospecção (teaser na Home + página `/prospeccao`). */
 export type ProspeccaoConfig = {
   /** Código de acesso da área de prospecção (independente da senha da galeria). */
   accessCode: string;
@@ -59,20 +71,18 @@ export type ProspeccaoConfig = {
   toastText: string;
 };
 
-export type FooterEasterEggConfig = {
-  /** Linhas digitadas sequencialmente no overlay ao chegar no rodapé. */
-  lines: string[];
-  /** Palavra/trecho destacado em dourado dentro das linhas acima (deve ser um substring exato de alguma linha). */
-  highlightWord: string;
-} | null;
-
+/** Config completa de um cliente — o que `data/<slug>/config.ts` deve exportar como `clientConfig`. */
 export type ClientConfig = {
+  /** Precisa bater com o nome da pasta em `data/<slug>/` e com a chave em `lib/clients/registry.ts`. */
   slug: string;
   brandName: string;
+  /** Logo exibido nas duas lock screens (Galeria e Prospecção). */
   logo: string;
   metadata: {
     title: string;
     description: string;
+    /** Imagem de preview ao compartilhar o link (OG/Twitter). Se ausente, usa `logo`. */
+    ogImage?: string;
   };
   theme: {
     /** Cor de destaque do cliente (hex). Pascoal usa o dourado atual, "#d4af6a". */
@@ -88,10 +98,8 @@ export type ClientConfig = {
     backgroundVideo: string;
     paragraph: string;
     stats: {
-      videosCount: number;
-      videosLabel: string;
-      photosCount: number;
-      photosLabel: string;
+      videos: Metric;
+      photos: Metric;
     };
   };
   features: {
@@ -120,7 +128,6 @@ export type ClientConfig = {
     /** Imagem de fundo do rodapé. Se ausente, usa a imagem decorativa padrão do template. */
     backgroundImage?: string;
   };
-  footerEasterEgg: FooterEasterEggConfig;
   gallery: {
     accessCodes: string[];
     lockScreenTitle: string;

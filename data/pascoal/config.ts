@@ -24,10 +24,8 @@ export const clientConfig: ClientConfig = {
     backgroundVideo: "/videos/hero-background.mp4",
     paragraph: "Todos materiais captados estão aqui...",
     stats: {
-      videosCount: 5,
-      videosLabel: "vídeos produzidos",
-      photosCount: 116,
-      photosLabel: "fotos editadas",
+      videos: { count: 5, label: "vídeos produzidos" },
+      photos: { count: 116, label: "fotos editadas" },
     },
   },
 
@@ -61,15 +59,6 @@ export const clientConfig: ClientConfig = {
 
   footer: {
     legalLine: "Desenvolvido para Pascoal Zona Sul Comércio de Auto Peças Ltda.\nCNPJ 90.041.187/0001-64.",
-  },
-
-  footerEasterEgg: {
-    lines: [
-      "Nossas captações geraram 8 horas de material bruto...",
-      "Muito desse material não pode estar aqui, mas ainda pode ser aproveitado!",
-      "Queremos em breve apresentar uma forma de continuarmos essa parceria...",
-    ],
-    highlightWord: "em breve",
   },
 
   gallery: {

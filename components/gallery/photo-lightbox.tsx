@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
 import { ChevronLeft, ChevronRight, Download, X } from "lucide-react";
 import type { GalleryPhoto } from "@/lib/gallery";
+import { useModalBehavior } from "@/hooks/use-modal-behavior";
 
 export function PhotoLightbox({
   photo,
@@ -19,22 +19,15 @@ export function PhotoLightbox({
   onNext: () => void;
   onClose: () => void;
 }) {
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-      if (event.key === "ArrowLeft" && hasPrev) onPrev();
-      if (event.key === "ArrowRight" && hasNext) onNext();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = "";
-    };
-  }, [onClose, onPrev, onNext, hasPrev, hasNext]);
+  const containerRef = useModalBehavior<HTMLDivElement>({
+    onClose,
+    onPrev: hasPrev ? onPrev : undefined,
+    onNext: hasNext ? onNext : undefined,
+  });
 
   return (
     <div
+      ref={containerRef}
       className="fixed inset-0 z-[110] flex items-center justify-center bg-black/95 p-4 backdrop-blur-md"
       role="dialog"
       aria-modal="true"

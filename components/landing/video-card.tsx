@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Download, Play } from "lucide-react";
-import type { VideoItem } from "@/lib/content/videos";
+import type { VideoItem } from "@/lib/clients/types";
 
 /** Renderiza a capa do vídeo. `contain-blur` evita cortar mal uma foto cujo formato
  *  não bate com o card (ex.: foto horizontal usada provisoriamente num card vertical). */

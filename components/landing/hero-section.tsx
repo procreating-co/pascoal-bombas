@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { Metric } from "@/lib/clients/types";
 
 const WELCOME_TYPE_MS = 40;
 
@@ -102,7 +103,7 @@ export type HeroSectionProps = {
   welcomeLines: [string, string];
   backgroundVideo: string;
   paragraph: string;
-  stats: { videosCount: number; videosLabel: string; photosCount: number; photosLabel: string };
+  stats: { videos: Metric; photos: Metric };
 };
 
 export function HeroSection({ welcomeLines, backgroundVideo, paragraph, stats }: HeroSectionProps) {
@@ -162,12 +163,12 @@ export function HeroSection({ welcomeLines, backgroundVideo, paragraph, stats }:
           </p>
           <div className="flex items-start justify-center gap-8 sm:contents">
             <div className="flex shrink-0 flex-col items-center gap-1 text-center sm:flex-row sm:items-baseline sm:gap-2 sm:text-left">
-              <span className="font-display text-3xl leading-none text-[var(--client-accent)] sm:text-4xl"><AnimatedNumber value={stats.videosCount} pad={2} start={statsVisible} duration={3000} onDone={() => setVideosDone(true)} /></span>
-              <span className={`whitespace-nowrap text-xs leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${videosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>{stats.videosLabel}</span>
+              <span className="font-display text-3xl leading-none text-[var(--client-accent)] sm:text-4xl"><AnimatedNumber value={stats.videos.count} pad={2} start={statsVisible} duration={3000} onDone={() => setVideosDone(true)} /></span>
+              <span className={`whitespace-nowrap text-xs leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${videosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>{stats.videos.label}</span>
             </div>
             <div className="flex shrink-0 flex-col items-center gap-1 text-center sm:flex-row sm:items-baseline sm:gap-2 sm:text-left">
-              <span className="font-display text-3xl leading-none text-[var(--client-accent)] sm:text-4xl"><AnimatedNumber value={stats.photosCount} start={statsVisible} duration={1300} linear onDone={() => setPhotosDone(true)} /></span>
-              <span className={`whitespace-nowrap text-xs leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${photosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>{stats.photosLabel}</span>
+              <span className="font-display text-3xl leading-none text-[var(--client-accent)] sm:text-4xl"><AnimatedNumber value={stats.photos.count} start={statsVisible} duration={1300} linear onDone={() => setPhotosDone(true)} /></span>
+              <span className={`whitespace-nowrap text-xs leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${photosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>{stats.photos.label}</span>
             </div>
           </div>
         </div>

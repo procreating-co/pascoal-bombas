@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
-import { isValidProspeccaoCode } from "@/lib/prospeccao";
+import { useAccessCodeForm } from "@/hooks/use-access-code-form";
 
 export type ProspeccaoLockScreenProps = {
   onUnlock: () => void;
@@ -14,18 +13,7 @@ export type ProspeccaoLockScreenProps = {
 };
 
 export function LockScreen({ onUnlock, accessCode, title, logo, brandName }: ProspeccaoLockScreenProps) {
-  const [code, setCode] = useState("");
-  const [error, setError] = useState(false);
-  const [showCode, setShowCode] = useState(false);
-
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    if (isValidProspeccaoCode(code, accessCode)) {
-      onUnlock();
-    } else {
-      setError(true);
-    }
-  };
+  const { code, error, showCode, setShowCode, handleCodeChange, handleSubmit } = useAccessCodeForm(accessCode, onUnlock);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-black px-6 text-white">
@@ -44,11 +32,9 @@ export function LockScreen({ onUnlock, accessCode, title, logo, brandName }: Pro
             autoFocus
             autoComplete="off"
             value={code}
-            onChange={(event) => {
-              setCode(event.target.value);
-              setError(false);
-            }}
+            onChange={handleCodeChange}
             placeholder="Código de acesso"
+            aria-label="Código de acesso"
             className={`h-14 w-full border bg-white/[0.03] pl-5 pr-12 font-mono text-lg tracking-widest text-white placeholder:text-white/30 focus:outline-none ${
               error ? "border-red-500/60" : "border-white/15 focus:border-[var(--client-accent)]"
             }`}

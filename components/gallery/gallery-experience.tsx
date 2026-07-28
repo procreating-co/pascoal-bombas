@@ -5,6 +5,7 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import { ArrowRight, Home } from "lucide-react";
 import { LockScreen } from "@/components/gallery/lock-screen";
+import { AnimatedRevealText } from "@/components/shared/animated-reveal-text";
 import type { GalleryFolder } from "@/lib/gallery";
 
 const PhotoLightbox = dynamic(() => import("@/components/gallery/photo-lightbox").then((mod) => mod.PhotoLightbox));
@@ -76,23 +77,6 @@ function GalleryHintLink({ driveUrl }: { driveUrl: string }) {
       </span>
       <ArrowRight className="size-4 shrink-0 sm:size-5" />
     </a>
-  );
-}
-
-function AnimatedHeading({ text }: { text: string }) {
-  return (
-    <span aria-label={text}>
-      {text.split("").map((character, index) => (
-        <span
-          key={`${character}-${index}`}
-          aria-hidden="true"
-          className="inline-block animate-[name-reveal_700ms_ease-out_both] motion-reduce:animate-none"
-          style={{ animationDelay: `${index * 40}ms` }}
-        >
-          {character}
-        </span>
-      ))}
-    </span>
   );
 }
 
@@ -173,7 +157,7 @@ export function GalleryExperience({ folders, accessCodes, lockScreenTitle, logo,
             <>
               <header className="mb-8 flex flex-wrap items-end justify-between gap-4 lg:mb-10">
                 <h1 className="text-balance font-display text-3xl leading-[0.95] tracking-tight sm:text-4xl md:text-6xl lg:text-7xl">
-                  <AnimatedHeading text="Galeria" />
+                  <AnimatedRevealText text="Galeria" />
                 </h1>
                 {driveUrl && <GalleryHintLink driveUrl={driveUrl} />}
               </header>
@@ -214,7 +198,7 @@ export function GalleryExperience({ folders, accessCodes, lockScreenTitle, logo,
 
               <header className="mb-8 flex flex-wrap items-end justify-between gap-4 lg:mb-10">
                 <h2 className="text-balance font-display text-3xl leading-[0.95] tracking-tight sm:text-5xl md:text-6xl">
-                  <AnimatedHeading key={activeFolder.id} text={activeFolder.label} />
+                  <AnimatedRevealText key={activeFolder.id} text={activeFolder.label} />
                 </h2>
                 {driveUrl && <GalleryHintLink driveUrl={driveUrl} />}
               </header>

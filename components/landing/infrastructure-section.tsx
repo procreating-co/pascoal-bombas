@@ -3,29 +3,7 @@
 import { memo, useEffect, useRef, useState, type ReactNode } from "react";
 import { Car, ClipboardList, Handshake, Send, type LucideIcon } from "lucide-react";
 import type { ProspeccaoConfig } from "@/lib/clients/types";
-
-function useCountdown(targetISO: string) {
-  const [msLeft, setMsLeft] = useState<number | null>(null);
-
-  useEffect(() => {
-    const target = new Date(targetISO).getTime();
-    const tick = () => setMsLeft(Math.max(0, target - Date.now()));
-    tick();
-    const interval = setInterval(tick, 1000);
-    return () => clearInterval(interval);
-  }, [targetISO]);
-
-  const locked = msLeft === null || msLeft > 0;
-  const totalSeconds = Math.floor((msLeft ?? 0) / 1000);
-
-  return {
-    locked,
-    days: Math.floor(totalSeconds / 86400),
-    hours: Math.floor((totalSeconds % 86400) / 3600),
-    minutes: Math.floor((totalSeconds % 3600) / 60),
-    seconds: totalSeconds % 60,
-  };
-}
+import { useCountdown } from "@/hooks/use-countdown";
 
 function CountdownUnit({ value, label }: { value: number; label: string }) {
   return (

@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { Navigation } from "@/components/landing/navigation";
 import { HeroSection } from "@/components/landing/hero-section";
@@ -7,8 +6,6 @@ import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { InfrastructureSection } from "@/components/landing/infrastructure-section";
 import { FooterSection } from "@/components/landing/footer-section";
 import { getClientConfig, getClientVideos } from "@/lib/clients";
-
-const FooterEasterEgg = dynamic(() => import("@/components/landing/footer-easter-egg").then((mod) => mod.FooterEasterEgg));
 
 export default async function ClientHome({ params }: { params: Promise<{ client: string }> }) {
   const { client } = await params;
@@ -55,7 +52,6 @@ export default async function ClientHome({ params }: { params: Promise<{ client:
       />
       {config.prospeccao && <InfrastructureSection prospeccao={config.prospeccao} prospeccaoHref={prospeccaoHref} />}
       <FooterSection brandName={config.brandName} legalLine={config.footer.legalLine} backgroundImage={config.footer.backgroundImage} />
-      {config.footerEasterEgg && <FooterEasterEgg lines={config.footerEasterEgg.lines} highlightWord={config.footerEasterEgg.highlightWord} />}
     </main>
   );
 }
