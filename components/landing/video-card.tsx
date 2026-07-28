@@ -37,7 +37,7 @@ export function VideoCard({ video, titleOverride, badgeOverride, bare, stretch, 
         <h3 className="min-w-0 shrink text-balance text-left font-display text-xl leading-snug lg:text-2xl">{title}</h3>
         <span className="h-px min-w-6 flex-1 bg-white/15" />
         {video.ready ? (
-          <a href={video.downloadHref} download className="flex size-10 shrink-0 items-center justify-center border border-white/15 text-white/55 transition-colors hover:border-[var(--client-accent)] hover:text-[var(--client-accent)]" aria-label={`Baixar vídeo ${video.number}`}><Download className="size-4" /></a>
+          <a href={`/api/download?src=${encodeURIComponent(video.downloadHref)}`} download className="flex size-10 shrink-0 items-center justify-center border border-white/15 text-white/55 transition-colors hover:border-[var(--client-accent)] hover:text-[var(--client-accent)]" aria-label={`Baixar vídeo ${video.number}`}><Download className="size-4" /></a>
         ) : (
           <span className="shrink-0 font-mono text-[10px] uppercase tracking-wide text-white/35">{badgeOverride ?? "Em produção"}</span>
         )}

@@ -23,7 +23,7 @@ function VideoTile({ video, onOpen }: { video: VideoItem; onOpen: () => void }) 
         <span className="h-px min-w-6 flex-1 bg-white/15" />
         {video.ready && (
           <a
-            href={video.downloadHref}
+            href={`/api/download?src=${encodeURIComponent(video.downloadHref)}`}
             download
             className="flex size-10 shrink-0 items-center justify-center border border-white/15 text-white/55 transition-colors hover:border-[var(--client-accent)] hover:text-[var(--client-accent)]"
             aria-label={`Baixar vídeo ${video.number}`}
