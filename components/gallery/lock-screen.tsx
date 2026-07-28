@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import { isValidGalleryCode } from "@/lib/gallery";
 
@@ -20,8 +21,8 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-black px-6 text-white">
-      <div className="h-40 w-40 overflow-hidden sm:h-48 sm:w-48">
-        <img src="/images/pascoal-logo.png" alt="Pascoal Bombas" className="h-full w-full scale-[1.8] object-cover" />
+      <div className="relative h-40 w-40 overflow-hidden sm:h-48 sm:w-48">
+        <Image src="/images/pascoal-logo.png" alt="Pascoal Bombas" fill sizes="192px" className="scale-[1.8] object-cover" />
       </div>
       <span className="mt-2 inline-flex items-center gap-3 font-mono text-sm text-white/45">
         <span className="h-px w-12 bg-white/30" />Acesso restrito<span className="h-px w-12 bg-white/30" />

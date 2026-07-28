@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { memo, useEffect, useRef, useState, type ReactNode } from "react";
 import { Car, ClipboardList, Handshake, Send, type LucideIcon } from "lucide-react";
 
 /** Data-alvo do desbloqueio: 30/07/2026 às 00:00, horário de Brasília (UTC-3). */
@@ -34,17 +34,17 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
     <div className="flex flex-col items-center">
       <span
         key={value}
-        className="animate-char-in block font-display text-4xl tabular-nums text-[#d4af6a] drop-shadow-[0_0_18px_rgba(212,175,106,0.4)] lg:text-5xl"
+        className="animate-char-in block font-display text-2xl tabular-nums text-[#d4af6a] drop-shadow-[0_0_18px_rgba(212,175,106,0.4)] sm:text-4xl lg:text-5xl"
       >
         {String(value).padStart(2, "0")}
       </span>
-      <span className="mt-2 font-mono text-[10px] uppercase tracking-wide text-white/40">{label}</span>
+      <span className="mt-1 font-mono text-[9px] uppercase tracking-wide text-white/40 sm:mt-2 sm:text-[10px]">{label}</span>
     </div>
   );
 }
 
 /** Notificação estilo tooltip nativo: aparece acima do elemento, com seta e leve deslize ao revelar. */
-function Tooltip({ label, children }: { label: string; children: ReactNode }) {
+const Tooltip = memo(function Tooltip({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="group/tip relative inline-flex">
       {children}
@@ -54,11 +54,11 @@ function Tooltip({ label, children }: { label: string; children: ReactNode }) {
       </div>
     </div>
   );
-}
+});
 
 const FUNNEL_STEP_MS = 20000;
 
-function FunnelStep({ icon: Icon, label, active }: { icon: LucideIcon; label: string; active: boolean }) {
+const FunnelStep = memo(function FunnelStep({ icon: Icon, label, active }: { icon: LucideIcon; label: string; active: boolean }) {
   return (
     <Tooltip label={label}>
       <div
@@ -70,11 +70,11 @@ function FunnelStep({ icon: Icon, label, active }: { icon: LucideIcon; label: st
       </div>
     </Tooltip>
   );
-}
+});
 
 /** Funil de aquisição em ícones (sem texto): lista de oficinas → disparo de vídeos → reunião.
  *  Os círculos acendem em sequência, tipo semáforo, cada um preenchendo o próprio anel. */
-function AcquisitionFunnel({ activeStep }: { activeStep: number }) {
+const AcquisitionFunnel = memo(function AcquisitionFunnel({ activeStep }: { activeStep: number }) {
   return (
     <div className="flex items-center justify-center gap-3 lg:gap-5">
       <FunnelStep icon={ClipboardList} label="Lista de Prospecção" active={activeStep === 0} />
@@ -84,7 +84,7 @@ function AcquisitionFunnel({ activeStep }: { activeStep: number }) {
       <FunnelStep icon={Handshake} label="Reunião Estratégica" active={activeStep === 2} />
     </div>
   );
-}
+});
 
 const TYPING_WORDS = ["Oficinas", "Parceiros", "Negócios"];
 const TYPE_MS = 70;
@@ -229,13 +229,13 @@ export function InfrastructureSection() {
                     <AcquisitionFunnel activeStep={activeStep} />
                   </div>
 
-                  <div ref={countdownRef} className="mt-10 inline-flex items-center justify-center lg:mt-14">
+                  <div ref={countdownRef} className="mt-10 inline-flex flex-wrap items-center justify-center lg:mt-14">
                     <CountdownUnit value={days} label="Dias" />
-                    <span className="mx-2 font-display text-2xl text-white/15 lg:mx-4 lg:text-3xl">:</span>
+                    <span className="mx-1 font-display text-lg text-white/15 sm:mx-2 sm:text-2xl lg:mx-4 lg:text-3xl">:</span>
                     <CountdownUnit value={hours} label="Horas" />
-                    <span className="mx-2 font-display text-2xl text-white/15 lg:mx-4 lg:text-3xl">:</span>
+                    <span className="mx-1 font-display text-lg text-white/15 sm:mx-2 sm:text-2xl lg:mx-4 lg:text-3xl">:</span>
                     <CountdownUnit value={minutes} label="Minutos" />
-                    <span className="mx-2 font-display text-2xl text-white/15 lg:mx-4 lg:text-3xl">:</span>
+                    <span className="mx-1 font-display text-lg text-white/15 sm:mx-2 sm:text-2xl lg:mx-4 lg:text-3xl">:</span>
                     <CountdownUnit value={seconds} label="Segundos" />
                   </div>
                 </>

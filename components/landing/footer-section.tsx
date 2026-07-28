@@ -1,9 +1,11 @@
+import Image from "next/image";
+
 export function FooterSection() {
   return (
     <footer className="relative bg-black pt-14 text-white lg:pt-20">
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-background via-black/70 to-black lg:h-20" />
       <div className="relative h-[300px] w-full overflow-hidden md:h-[400px]">
-        <img src="/images/footer-earth-gradient.png" alt="Paisagem luminosa encerrando a apresentação" className="h-full w-full object-cover object-center" />
+        <Image src="/images/footer-earth-gradient.png" alt="Paisagem luminosa encerrando a apresentação" fill sizes="100vw" loading="lazy" className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black" />
       </div>
       <div className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-12">

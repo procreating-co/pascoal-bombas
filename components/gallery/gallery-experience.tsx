@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import dynamic from "next/dynamic";
 import { ArrowRight, Home } from "lucide-react";
 import { LockScreen } from "@/components/gallery/lock-screen";
-import { PhotoLightbox } from "@/components/gallery/photo-lightbox";
 import type { GalleryFolder } from "@/lib/gallery";
+
+const PhotoLightbox = dynamic(() => import("@/components/gallery/photo-lightbox").then((mod) => mod.PhotoLightbox));
 
 const COVER_PHOTO_LIMIT = 6;
 
@@ -116,11 +119,14 @@ function FolderCover({ folder }: { folder: GalleryFolder }) {
   return (
     <>
       {coverPhotos.map((photo, photoIndex) => (
-        <img
+        <Image
           key={photo.src}
           src={photo.src}
           alt={folder.label}
-          className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-105 ${
+          fill
+          sizes="(min-width: 1024px) 31vw, (min-width: 640px) 55vw, 78vw"
+          loading="lazy"
+          className={`object-cover transition-all duration-700 group-hover:scale-105 ${
             photoIndex === activeIndex ? "translate-x-0 opacity-80 group-hover:opacity-100" : "translate-x-6 opacity-0"
           }`}
         />
@@ -198,7 +204,7 @@ export function GalleryExperience({ folders }: { folders: GalleryFolder[] }) {
               </button>
 
               <header className="mb-8 flex flex-wrap items-end justify-between gap-4 lg:mb-10">
-                <h2 className="text-balance font-display text-4xl leading-[0.95] tracking-tight sm:text-5xl md:text-6xl">
+                <h2 className="text-balance font-display text-3xl leading-[0.95] tracking-tight sm:text-5xl md:text-6xl">
                   <AnimatedHeading key={activeFolder.id} text={activeFolder.label} />
                 </h2>
                 <GalleryHintLink />
@@ -215,7 +221,7 @@ export function GalleryExperience({ folders }: { folders: GalleryFolder[] }) {
                       onClick={() => setLightboxIndex(index)}
                       className="group relative overflow-hidden border border-white/10 bg-background transition-colors hover:border-[#d4af6a]/70"
                     >
-                      <img src={photo.src} alt={photo.alt} className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                      <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     </button>
                   ))}
                 </div>

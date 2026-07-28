@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { Download, Play } from "lucide-react";
 import { acquisitionVideo, presentationVideo, socialVideos, type VideoItem } from "@/lib/content/videos";
-import { VideoCard, VideoLightbox, VideoPoster, type ActiveVideo } from "@/components/landing/video-card";
+import { VideoCard, VideoPoster } from "@/components/landing/video-card";
+import type { ActiveVideo } from "@/components/landing/video-lightbox";
+
+const VideoLightbox = dynamic(() => import("@/components/landing/video-lightbox"));
 
 /**
  * Vídeo "solto": cabeçalho acima da mídia, sem card/borda envolvendo os dois.
@@ -11,7 +15,7 @@ import { VideoCard, VideoLightbox, VideoPoster, type ActiveVideo } from "@/compo
  */
 function VideoTile({ video, title, onOpen }: { video: VideoItem; title: string; onOpen: () => void }) {
   return (
-    <div className="w-80 max-w-[340px] flex-1">
+    <div className="w-full lg:w-80 lg:max-w-[340px] lg:flex-1">
       <div className="mb-4 flex shrink-0 items-center gap-4 lg:mb-5">
         <span className="shrink-0 font-display text-3xl text-[#d4af6a]">{video.number}.</span>
         <h3 className="min-w-0 shrink text-balance text-left font-display text-xl leading-snug lg:text-2xl">{title}</h3>
@@ -65,15 +69,15 @@ export function HowItWorksSection({ firstVideoTitle }: { firstVideoTitle: string
         </header>
 
         <div className="overflow-hidden bg-black text-white lg:grid lg:grid-cols-[340px_minmax(0,1fr)]">
-          <div className="flex flex-col justify-center p-8 text-left lg:p-12">
-            <div className="flex items-baseline gap-4">
+          <div className="flex flex-col justify-center p-6 text-left sm:p-8 lg:p-12">
+            <div className="flex items-baseline gap-3 sm:gap-4">
               <span className="font-mono text-sm text-white/40">02.</span>
-              <h3 className="font-display text-4xl">Vídeos Produzidos.</h3>
+              <h3 className="font-display text-2xl sm:text-4xl">Vídeos Produzidos.</h3>
             </div>
-            <p className="mt-6 pl-10 text-lg leading-relaxed text-white/55">Conteúdos estratégicos para ambos os perfis, programados para estreia a partir dessa sexta-feira.</p>
+            <p className="mt-4 pl-0 text-base leading-relaxed text-white/55 sm:mt-6 sm:pl-10 sm:text-lg">Conteúdos estratégicos para ambos os perfis, programados para estreia a partir dessa sexta-feira.</p>
           </div>
           <div className="min-w-0 p-6 lg:p-10">
-            <div className="flex w-full justify-end gap-6">
+            <div className="flex w-full flex-col gap-6 lg:flex-row lg:justify-end">
               <VideoTile
                 video={verticalOne}
                 title="Processo"

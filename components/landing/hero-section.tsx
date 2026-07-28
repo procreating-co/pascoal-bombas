@@ -126,17 +126,17 @@ export function HeroSection() {
       </div>
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-44 bg-gradient-to-b from-transparent via-black/55 to-background" />
       <div ref={statsRef} className={`absolute bottom-[57px] left-0 right-0 z-10 transition-all delay-500 duration-1000 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}>
-        <div className="mx-auto grid max-w-[1400px] grid-cols-[minmax(0,1fr)_auto_auto] items-baseline gap-x-4 gap-y-2 pl-6 pr-12 sm:gap-x-8 lg:gap-x-12 lg:pl-12 lg:pr-[88px]">
-          <p className="truncate font-display text-lg font-light leading-none tracking-tight sm:text-3xl md:text-4xl">
+        <div className="mx-auto grid max-w-[1400px] grid-cols-[minmax(0,1fr)_auto_auto] items-baseline gap-x-3 gap-y-2 pl-6 pr-6 sm:gap-x-8 lg:gap-x-12 lg:pl-12 lg:pr-[88px]">
+          <p className="truncate font-display text-base font-light leading-none tracking-tight sm:text-3xl md:text-4xl">
             {statsVisible && <span className="inline-block animate-wipe-breathe">Todos materiais captados estão aqui...</span>}
           </p>
-          <div className="flex shrink-0 items-baseline gap-2">
-            <span className="font-display text-3xl leading-none text-[#d4af6a] sm:text-4xl"><AnimatedNumber value={5} pad={2} start={statsVisible} duration={3000} onDone={() => setVideosDone(true)} /></span>
-            <span className={`whitespace-nowrap text-xs leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${videosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>vídeos produzidos</span>
+          <div className="flex shrink-0 items-baseline gap-1.5 sm:gap-2">
+            <span className="font-display text-2xl leading-none text-[#d4af6a] sm:text-4xl"><AnimatedNumber value={5} pad={2} start={statsVisible} duration={3000} onDone={() => setVideosDone(true)} /></span>
+            <span className={`whitespace-nowrap text-[10px] leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${videosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>vídeos produzidos</span>
           </div>
-          <div className="flex shrink-0 items-baseline gap-2">
-            <span className="font-display text-3xl leading-none text-[#d4af6a] sm:text-4xl"><AnimatedNumber value={116} start={statsVisible} duration={1300} linear onDone={() => setPhotosDone(true)} /></span>
-            <span className={`whitespace-nowrap text-xs leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${photosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>fotos editadas</span>
+          <div className="flex shrink-0 items-baseline gap-1.5 sm:gap-2">
+            <span className="font-display text-2xl leading-none text-[#d4af6a] sm:text-4xl"><AnimatedNumber value={116} start={statsVisible} duration={1300} linear onDone={() => setPhotosDone(true)} /></span>
+            <span className={`whitespace-nowrap text-[10px] leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${photosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>fotos editadas</span>
           </div>
         </div>
       </div>

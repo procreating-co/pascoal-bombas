@@ -1,26 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { Download, Play, X } from "lucide-react";
+import Image from "next/image";
+import { Download, Play } from "lucide-react";
 import type { VideoItem } from "@/lib/content/videos";
-
-export type ActiveVideo = { poster: string; title: string; videoSrc: string };
-
-export function VideoLightbox({ item, onClose }: { item: ActiveVideo; onClose: () => void }) {
-  useEffect(() => {
-    const closeOnEscape = (event: KeyboardEvent) => event.key === "Escape" && onClose();
-    window.addEventListener("keydown", closeOnEscape);
-    document.body.style.overflow = "hidden";
-    return () => { window.removeEventListener("keydown", closeOnEscape); document.body.style.overflow = ""; };
-  }, [onClose]);
-
-  return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/95 p-4 backdrop-blur-md" role="dialog" aria-modal="true" aria-label={`Vídeo: ${item.title}`} onClick={onClose}>
-      <button type="button" onClick={onClose} className="absolute right-6 top-6 z-10 flex size-12 items-center justify-center border border-white/20 text-white hover:border-[#d4af6a] hover:text-[#d4af6a]" aria-label="Fechar vídeo"><X className="size-5" /></button>
-      <video autoPlay controls playsInline poster={item.poster} onClick={(event) => event.stopPropagation()} className="max-h-[90vh] max-w-[92vw] bg-black object-contain"><source src={item.videoSrc} type="video/mp4" /></video>
-    </div>
-  );
-}
 
 /** Renderiza a capa do vídeo. `contain-blur` evita cortar mal uma foto cujo formato
  *  não bate com o card (ex.: foto horizontal usada provisoriamente num card vertical). */
@@ -28,12 +10,12 @@ export function VideoPoster({ item }: { item: VideoItem }) {
   if (item.posterFit === "contain-blur") {
     return (
       <>
-        <img src={item.poster} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl" />
-        <img src={item.poster} alt="" className="absolute inset-0 h-full w-full object-contain transition-transform duration-700 group-hover:scale-105" />
+        <Image src={item.poster} alt="" aria-hidden="true" fill sizes="(min-width: 1024px) 340px, 90vw" className="scale-110 object-cover opacity-40 blur-2xl" />
+        <Image src={item.poster} alt="" fill sizes="(min-width: 1024px) 340px, 90vw" className="object-contain transition-transform duration-700 group-hover:scale-105" />
       </>
     );
   }
-  return <img src={item.poster || "/placeholder.svg"} alt="" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />;
+  return <Image src={item.poster || "/placeholder.svg"} alt="" fill sizes="(min-width: 1024px) 340px, 90vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />;
 }
 
 /**

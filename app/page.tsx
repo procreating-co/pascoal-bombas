@@ -1,10 +1,12 @@
+import dynamic from "next/dynamic";
 import { Navigation } from "@/components/landing/navigation";
 import { HeroSection } from "@/components/landing/hero-section";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { InfrastructureSection } from "@/components/landing/infrastructure-section";
 import { FooterSection } from "@/components/landing/footer-section";
-import { FooterEasterEgg } from "@/components/landing/footer-easter-egg";
+
+const FooterEasterEgg = dynamic(() => import("@/components/landing/footer-easter-egg").then((mod) => mod.FooterEasterEgg));
 
 export default function Home() {
   return (

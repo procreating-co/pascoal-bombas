@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 const photos: { src: string | null; alt: string; category: string }[] = [
   { src: "/images/gallery/retratos-pascoal.jpg", alt: "Retratos da Pascoal Bombas", category: "Retratos Pascoal" },
@@ -29,7 +30,14 @@ function PhotoCarousel({ isVisible }: { isVisible: boolean }) {
           aria-label={`Acessar galeria: ${photo.category}`}
         >
           {photo.src ? (
-            <img src={photo.src} alt={photo.alt} className="h-full w-full object-cover opacity-80 transition-all duration-700 group-hover:scale-105 group-hover:opacity-100 group-focus-visible:scale-105 group-focus-visible:opacity-100" />
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              sizes="(min-width: 1024px) 38vw, (min-width: 640px) 46vw, 78vw"
+              loading="lazy"
+              className="object-cover opacity-80 transition-all duration-700 group-hover:scale-105 group-hover:opacity-100 group-focus-visible:scale-105 group-focus-visible:opacity-100"
+            />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-white/[0.02]">
               <span className="font-mono text-xs uppercase tracking-wide text-white/30">Em breve</span>
@@ -64,13 +72,13 @@ export function FeaturesSection() {
         </div>
 
         <div id="fotos" className="scroll-mt-24 overflow-hidden bg-black text-white lg:grid lg:grid-cols-[340px_minmax(0,1fr)]">
-          <div className="flex flex-col justify-center p-8 text-left lg:p-12">
-            <div className="flex items-baseline gap-4">
+          <div className="flex flex-col justify-center p-6 text-left sm:p-8 lg:p-12">
+            <div className="flex items-baseline gap-3 sm:gap-4">
               <span className="font-mono text-sm text-white/40">01.</span>
-              <h3 className="font-display text-4xl">Fotos Produzidas</h3>
+              <h3 className="font-display text-2xl sm:text-4xl">Fotos Produzidas</h3>
             </div>
-            <p className="mt-6 pl-10 text-lg leading-relaxed text-white/55">Captamos a essência da equipe, dos ambientes e processos das Oficinas Pascoal.</p>
-            <div className="mt-6 pl-10">
+            <p className="mt-4 pl-0 text-base leading-relaxed text-white/55 sm:mt-6 sm:pl-10 sm:text-lg">Captamos a essência da equipe, dos ambientes e processos das Oficinas Pascoal.</p>
+            <div className="mt-4 pl-0 sm:mt-6 sm:pl-10">
               <a href="/galeria" className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-full bg-[#d4af6a] px-6 text-sm font-medium text-black transition-all duration-300 hover:scale-[1.03] hover:bg-white">
                 Acessar Galeria
               </a>

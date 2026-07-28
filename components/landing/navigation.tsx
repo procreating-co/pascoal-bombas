@@ -11,15 +11,21 @@ export function Navigation() {
   const lastScrollY = useRef(0);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsScrolled(currentScrollY > 20);
-      if (currentScrollY > lastScrollY.current && currentScrollY > 150) {
-        setIsHidden(true);
-      } else if (currentScrollY < lastScrollY.current) {
-        setIsHidden(false);
-      }
-      lastScrollY.current = currentScrollY;
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        setIsScrolled(currentScrollY > 20);
+        if (currentScrollY > lastScrollY.current && currentScrollY > 150) {
+          setIsHidden(true);
+        } else if (currentScrollY < lastScrollY.current) {
+          setIsHidden(false);
+        }
+        lastScrollY.current = currentScrollY;
+        ticking = false;
+      });
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
