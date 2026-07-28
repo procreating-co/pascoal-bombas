@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 
 const WELCOME_TYPE_MS = 40;
 
-/** Digita "Sejam bem-vindos, Pascoal e equipe." uma \u00FAnica vez ao carregar a p\u00E1gina. */
-function useTypedWelcome() {
+/** Digita as duas linhas de boas-vindas uma \u00FAnica vez ao carregar a p\u00E1gina. */
+function useTypedWelcome(lines: [string, string]) {
   const [line1, setLine1] = useState("");
   const [line2, setLine2] = useState("");
   const [activeLine, setActiveLine] = useState<1 | 2 | null>(1);
@@ -30,24 +30,25 @@ function useTypedWelcome() {
     };
 
     setActiveLine(1);
-    typeText("Sejam bem-vindos,", setLine1, () => {
+    typeText(lines[0], setLine1, () => {
       setActiveLine(2);
-      typeText("Pascoal e equipe.", setLine2, () => setActiveLine(null));
+      typeText(lines[1], setLine2, () => setActiveLine(null));
     });
 
     return () => {
       cancelled = true;
       timeouts.forEach(clearTimeout);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { line1, line2, activeLine };
 }
 
-function AnimatedTitle() {
-  const { line1, line2, activeLine } = useTypedWelcome();
+function AnimatedTitle({ lines }: { lines: [string, string] }) {
+  const { line1, line2, activeLine } = useTypedWelcome(lines);
   return (
-    <span aria-label="Sejam bem-vindos, Pascoal e equipe.">
+    <span aria-label={`${lines[0]} ${lines[1]}`}>
       <span className="block" aria-hidden="true">
         {line1}
         {activeLine === 1 && <span className="animate-pulse">|</span>}
@@ -97,7 +98,14 @@ function AnimatedNumber({ value, pad = 0, start, duration = 1700, linear = false
   );
 }
 
-export function HeroSection() {
+export type HeroSectionProps = {
+  welcomeLines: [string, string];
+  backgroundVideo: string;
+  paragraph: string;
+  stats: { videosCount: number; videosLabel: string; photosCount: number; photosLabel: string };
+};
+
+export function HeroSection({ welcomeLines, backgroundVideo, paragraph, stats }: HeroSectionProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
   const [videosDone, setVideosDone] = useState(false);
@@ -137,29 +145,29 @@ export function HeroSection() {
     <section className="relative min-h-screen overflow-hidden bg-black text-white">
       <div className="absolute inset-0 z-0">
         <video ref={videoRef} autoPlay muted loop playsInline preload="auto" aria-hidden="true" className="h-full w-full object-cover object-center opacity-75">
-          <source src="/videos/hero-background.mp4" type="video/mp4" />
+          <source src={backgroundVideo} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/55" />
       </div>
       <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1400px] flex-col justify-center px-6 lg:px-12">
         <div className={`max-w-6xl transition-all duration-1000 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
-          <h1 className="text-balance font-display text-[clamp(2.25rem,5vw,5rem)] leading-[1.02] tracking-tight"><AnimatedTitle /></h1>
+          <h1 className="text-balance font-display text-[clamp(2.25rem,5vw,5rem)] leading-[1.02] tracking-tight"><AnimatedTitle lines={welcomeLines} /></h1>
         </div>
       </div>
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-44 bg-gradient-to-b from-transparent via-black/55 to-background" />
-      <div ref={statsRef} className={`absolute bottom-[57px] left-0 right-0 z-10 transition-all delay-500 duration-1000 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}>
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-2 pl-6 pr-6 sm:grid sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-baseline sm:gap-x-8 lg:gap-x-12 lg:pl-12 lg:pr-[88px]">
-          <p className="truncate font-display text-base font-light leading-none tracking-tight sm:text-3xl md:text-4xl">
-            {statsVisible && <span className="inline-block animate-wipe-breathe">Todos materiais captados estão aqui...</span>}
+      <div ref={statsRef} className={`absolute bottom-10 left-0 right-0 z-10 transition-all delay-500 duration-1000 sm:bottom-[57px] ${isVisible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}>
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-6 sm:grid sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-baseline sm:gap-x-8 sm:gap-y-0 lg:gap-x-12 lg:pl-12 lg:pr-[88px]">
+          <p className="text-balance text-center font-display text-base font-light leading-snug tracking-tight sm:truncate sm:text-left sm:text-3xl sm:leading-none md:text-4xl">
+            {statsVisible && <span className="inline-block animate-wipe-breathe">{paragraph}</span>}
           </p>
-          <div className="flex items-baseline gap-6 sm:contents">
-            <div className="flex shrink-0 items-baseline gap-1.5 sm:gap-2">
-              <span className="font-display text-2xl leading-none text-[#d4af6a] sm:text-4xl"><AnimatedNumber value={5} pad={2} start={statsVisible} duration={3000} onDone={() => setVideosDone(true)} /></span>
-              <span className={`whitespace-nowrap text-[10px] leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${videosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>vídeos produzidos</span>
+          <div className="flex items-start justify-center gap-8 sm:contents">
+            <div className="flex shrink-0 flex-col items-center gap-1 text-center sm:flex-row sm:items-baseline sm:gap-2 sm:text-left">
+              <span className="font-display text-3xl leading-none text-[var(--client-accent)] sm:text-4xl"><AnimatedNumber value={stats.videosCount} pad={2} start={statsVisible} duration={3000} onDone={() => setVideosDone(true)} /></span>
+              <span className={`whitespace-nowrap text-xs leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${videosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>{stats.videosLabel}</span>
             </div>
-            <div className="flex shrink-0 items-baseline gap-1.5 sm:gap-2">
-              <span className="font-display text-2xl leading-none text-[#d4af6a] sm:text-4xl"><AnimatedNumber value={116} start={statsVisible} duration={1300} linear onDone={() => setPhotosDone(true)} /></span>
-              <span className={`whitespace-nowrap text-[10px] leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${photosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>fotos editadas</span>
+            <div className="flex shrink-0 flex-col items-center gap-1 text-center sm:flex-row sm:items-baseline sm:gap-2 sm:text-left">
+              <span className="font-display text-3xl leading-none text-[var(--client-accent)] sm:text-4xl"><AnimatedNumber value={stats.photosCount} start={statsVisible} duration={1300} linear onDone={() => setPhotosDone(true)} /></span>
+              <span className={`whitespace-nowrap text-xs leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${photosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>{stats.photosLabel}</span>
             </div>
           </div>
         </div>
