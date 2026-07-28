@@ -103,6 +103,7 @@ export function HeroSection() {
   const [videosDone, setVideosDone] = useState(false);
   const [photosDone, setPhotosDone] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => setIsVisible(true), []);
   useEffect(() => {
@@ -111,10 +112,31 @@ export function HeroSection() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    // Alguns navegadores mobile ignoram o atributo `muted` do JSX na primeira renderização
+    // e bloqueiam o autoplay; setar a propriedade via ref e tentar de novo no primeiro toque resolve.
+    video.muted = true;
+    const tryPlay = () => video.play().catch(() => {});
+    tryPlay();
+    const retryOnInteraction = () => {
+      tryPlay();
+      document.removeEventListener("touchstart", retryOnInteraction);
+      document.removeEventListener("click", retryOnInteraction);
+    };
+    document.addEventListener("touchstart", retryOnInteraction, { once: true, passive: true });
+    document.addEventListener("click", retryOnInteraction, { once: true });
+    return () => {
+      document.removeEventListener("touchstart", retryOnInteraction);
+      document.removeEventListener("click", retryOnInteraction);
+    };
+  }, []);
+
   return (
     <section className="relative min-h-screen overflow-hidden bg-black text-white">
       <div className="absolute inset-0 z-0">
-        <video autoPlay muted loop playsInline aria-hidden="true" className="h-full w-full object-cover object-center opacity-75">
+        <video ref={videoRef} autoPlay muted loop playsInline preload="auto" aria-hidden="true" className="h-full w-full object-cover object-center opacity-75">
           <source src="/videos/hero-background.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/55" />
@@ -126,17 +148,19 @@ export function HeroSection() {
       </div>
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-44 bg-gradient-to-b from-transparent via-black/55 to-background" />
       <div ref={statsRef} className={`absolute bottom-[57px] left-0 right-0 z-10 transition-all delay-500 duration-1000 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}>
-        <div className="mx-auto grid max-w-[1400px] grid-cols-[minmax(0,1fr)_auto_auto] items-baseline gap-x-3 gap-y-2 pl-6 pr-6 sm:gap-x-8 lg:gap-x-12 lg:pl-12 lg:pr-[88px]">
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-2 pl-6 pr-6 sm:grid sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-baseline sm:gap-x-8 lg:gap-x-12 lg:pl-12 lg:pr-[88px]">
           <p className="truncate font-display text-base font-light leading-none tracking-tight sm:text-3xl md:text-4xl">
             {statsVisible && <span className="inline-block animate-wipe-breathe">Todos materiais captados estão aqui...</span>}
           </p>
-          <div className="flex shrink-0 items-baseline gap-1.5 sm:gap-2">
-            <span className="font-display text-2xl leading-none text-[#d4af6a] sm:text-4xl"><AnimatedNumber value={5} pad={2} start={statsVisible} duration={3000} onDone={() => setVideosDone(true)} /></span>
-            <span className={`whitespace-nowrap text-[10px] leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${videosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>vídeos produzidos</span>
-          </div>
-          <div className="flex shrink-0 items-baseline gap-1.5 sm:gap-2">
-            <span className="font-display text-2xl leading-none text-[#d4af6a] sm:text-4xl"><AnimatedNumber value={116} start={statsVisible} duration={1300} linear onDone={() => setPhotosDone(true)} /></span>
-            <span className={`whitespace-nowrap text-[10px] leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${photosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>fotos editadas</span>
+          <div className="flex items-baseline gap-6 sm:contents">
+            <div className="flex shrink-0 items-baseline gap-1.5 sm:gap-2">
+              <span className="font-display text-2xl leading-none text-[#d4af6a] sm:text-4xl"><AnimatedNumber value={5} pad={2} start={statsVisible} duration={3000} onDone={() => setVideosDone(true)} /></span>
+              <span className={`whitespace-nowrap text-[10px] leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${videosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>vídeos produzidos</span>
+            </div>
+            <div className="flex shrink-0 items-baseline gap-1.5 sm:gap-2">
+              <span className="font-display text-2xl leading-none text-[#d4af6a] sm:text-4xl"><AnimatedNumber value={116} start={statsVisible} duration={1300} linear onDone={() => setPhotosDone(true)} /></span>
+              <span className={`whitespace-nowrap text-[10px] leading-none text-white/50 transition-all duration-500 ease-out sm:text-sm ${photosDone ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"}`}>fotos editadas</span>
+            </div>
           </div>
         </div>
       </div>

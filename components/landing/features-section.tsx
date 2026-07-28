@@ -11,19 +11,46 @@ const photos: { src: string | null; alt: string; category: string }[] = [
   { src: "/images/gallery/zona-norte.jpg", alt: "Unidade Pascoal Zona Norte", category: "Pascoal Zona Norte" },
 ];
 
+const AUTO_ADVANCE_MS = 2000;
+
 function PhotoCarousel({ isVisible }: { isVisible: boolean }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const slideRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const pausedRef = useRef(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 1023px)");
+    if (!mql.matches) return;
+
+    let index = 0;
+    const interval = setInterval(() => {
+      if (pausedRef.current) return;
+      index = (index + 1) % photos.length;
+      slideRefs.current[index]?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+    }, AUTO_ADVANCE_MS);
+    return () => clearInterval(interval);
+  }, []);
+
+  const pause = () => { pausedRef.current = true; };
+  const resume = () => { pausedRef.current = false; };
+
   return (
     <div
+      ref={trackRef}
       onWheel={(event) => {
         if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
           event.currentTarget.scrollBy({ left: event.deltaY, behavior: "smooth" });
         }
       }}
+      onPointerDown={pause}
+      onPointerUp={resume}
+      onPointerCancel={resume}
       className="flex w-full cursor-grab touch-pan-x snap-x snap-mandatory gap-4 overflow-x-scroll scroll-smooth pb-2 active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {photos.map((photo, index) => (
         <a
           key={photo.category}
+          ref={(el) => { slideRefs.current[index] = el; }}
           href="/galeria"
           className={`group relative h-[380px] w-[78vw] max-w-[280px] shrink-0 snap-start overflow-hidden bg-black transition-all duration-700 sm:h-[430px] sm:w-[46%] sm:max-w-none lg:w-[38%] ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}
           style={{ transitionDelay: isVisible ? `${index * 120}ms` : "0ms" }}
@@ -43,8 +70,8 @@ function PhotoCarousel({ isVisible }: { isVisible: boolean }) {
               <span className="font-mono text-xs uppercase tracking-wide text-white/30">Em breve</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent opacity-40 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" />
-          <span className="absolute bottom-5 left-5 right-5 translate-y-2 text-left font-display text-lg text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">{photo.category}</span>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent opacity-100 transition-opacity duration-300 lg:opacity-40 lg:group-hover:opacity-100 lg:group-focus-visible:opacity-100" />
+          <span className="absolute bottom-5 left-5 right-5 translate-y-0 text-left font-display text-lg text-white opacity-100 transition-all duration-300 lg:translate-y-2 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:group-focus-visible:translate-y-0 lg:group-focus-visible:opacity-100">{photo.category}</span>
         </a>
       ))}
     </div>
@@ -78,13 +105,18 @@ export function FeaturesSection() {
               <h3 className="font-display text-2xl sm:text-4xl">Fotos Produzidas</h3>
             </div>
             <p className="mt-4 pl-0 text-base leading-relaxed text-white/55 sm:mt-6 sm:pl-10 sm:text-lg">Captamos a essência da equipe, dos ambientes e processos das Oficinas Pascoal.</p>
-            <div className="mt-4 pl-0 sm:mt-6 sm:pl-10">
+            <div className="mt-4 hidden pl-0 sm:mt-6 sm:pl-10 lg:block">
               <a href="/galeria" className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-full bg-[#d4af6a] px-6 text-sm font-medium text-black transition-all duration-300 hover:scale-[1.03] hover:bg-white">
                 Acessar Galeria
               </a>
             </div>
           </div>
           <div className="min-w-0 p-6 lg:p-10"><PhotoCarousel isVisible={isVisible} /></div>
+          <div className="px-6 pb-6 pt-2 lg:hidden">
+            <a href="/galeria" className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-full bg-[#d4af6a] px-6 text-sm font-medium text-black transition-all duration-300 hover:scale-[1.03] hover:bg-white">
+              Acessar Galeria
+            </a>
+          </div>
         </div>
       </div>
     </section>

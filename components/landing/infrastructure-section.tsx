@@ -172,7 +172,9 @@ export function InfrastructureSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const countdownRef = useRef<HTMLDivElement>(null);
+  const funnelRef = useRef<HTMLDivElement>(null);
   const [matchedWidth, setMatchedWidth] = useState<number | null>(null);
+  const [funnelWidth, setFunnelWidth] = useState<number | null>(null);
   const { locked, days, hours, minutes, seconds } = useCountdown(UNLOCK_AT);
 
   useEffect(() => {
@@ -203,7 +205,22 @@ export function InfrastructureSection() {
     };
   }, [locked]);
 
-  const buttonWidthStyle = locked && matchedWidth ? { width: matchedWidth, maxWidth: "100%" } : undefined;
+  useEffect(() => {
+    if (!locked || !funnelRef.current) return;
+    const el = funnelRef.current;
+    const updateWidth = () => setFunnelWidth(el.offsetWidth);
+    updateWidth();
+    const resizeObserver = new ResizeObserver(updateWidth);
+    resizeObserver.observe(el);
+    window.addEventListener("resize", updateWidth);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateWidth);
+    };
+  }, [locked]);
+
+  const matchedButtonWidth = locked ? Math.max(matchedWidth ?? 0, funnelWidth ?? 0) || null : null;
+  const buttonWidthStyle = matchedButtonWidth ? { width: matchedButtonWidth, maxWidth: "100%" } : undefined;
 
   return (
     <section id="estrategia-aquisicao" ref={sectionRef} className="relative scroll-mt-24 overflow-hidden pb-8 pt-8 lg:pb-10 lg:pt-10">
@@ -220,12 +237,13 @@ export function InfrastructureSection() {
             <div className="relative z-10">
               <span className="mb-3 inline-flex items-center gap-3 font-mono text-sm text-muted-foreground"><span className="h-px w-12 bg-[#d4af6a]" />Estratégia de Aquisição<span className="h-px w-12 bg-[#d4af6a]" /></span>
               <h2 className="text-balance font-display text-4xl leading-[0.95] tracking-tight sm:text-5xl md:text-7xl lg:text-[92px]">
-                Prospecção de <TypingSuffix start={isVisible} />
+                <span className="block lg:inline">Prospecção de</span>{" "}
+                <span className="block lg:inline"><TypingSuffix start={isVisible} /></span>
               </h2>
 
               {locked && (
                 <>
-                  <div className="mt-10 lg:mt-14">
+                  <div ref={funnelRef} className="mt-10 lg:mt-14">
                     <AcquisitionFunnel activeStep={activeStep} />
                   </div>
 
